@@ -1,7 +1,8 @@
-from typing import *
-
 import torch
 import torchtnt
+
+from typing import *
+from torchtnt import framework
 
 Batch = Tuple[torch.tensor, torch.tensor]
 
