@@ -54,7 +54,7 @@ def loadCenTrainAID():
     imagePaths, labels = [], []
     X, Y = _loadAID()
     skf = StratifiedKFold(n_splits=8, shuffle=True, random_state=__RANDOM__SEED__)
-    for i, (train_index, test_index) in enumerate(skf.split(X, Y)):
+    for i, (train_index, test_index) in enumerate(skf.split(X, np.argmax(Y, axis=1))):
         if i in __AID_SHADOW__SET:
             imagePaths += X[test_index]
             labels += Y[test_index]
@@ -64,7 +64,7 @@ def loadCenShadowAID():
     imagePaths, labels = [], []
     X, Y = _loadAID()
     skf = StratifiedKFold(n_splits=8, shuffle=True, random_state=__RANDOM__SEED__)
-    for i, (train_index, test_index) in enumerate(skf.split(X, Y)):
+    for i, (train_index, test_index) in enumerate(skf.split(X, np.argmax(Y, axis=1))):
         if i in __AID_TRAIN_SET__:
             imagePaths += X[test_index]
             labels += Y[test_index]
@@ -74,7 +74,7 @@ def loadCenShadowTrainAID(idx):
     imagePaths, labels = [], []
     X, Y = loadCenShadowAID()
     sss = StratifiedShuffleSplit(n_splits=128, shuffle=True, test_size=len(__AID_TRAIN_SET__)/len(__AID_SHADOW__SET), random_state=__RANDOM__SEED__)
-    for i, (train_index, test_index) in enumerate(sss.split(X, Y)):
+    for i, (train_index, test_index) in enumerate(sss.split(X, np.argmax(Y, axis=1))):
         if i == idx:
             imagePaths += X[test_index]
             labels += Y[test_index]
