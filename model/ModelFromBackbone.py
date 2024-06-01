@@ -5,7 +5,11 @@ class ModelFromBackbone(torch.nn.Module):
     def __init__(self, backbone, num_classes):
         super().__init__()
         self.backbone = getattr(torchvision.models, backbone)(weights=None)
-        self.backbone.fc = torch.nn.Linear(self.backbone.fc.in_features, num_classes)
+
+        if hasattr(self.backbone, 'fc'):
+            self.backbone.fc = torch.nn.Linear(self.backbone.fc.in_features, num_classes)
+        else:
+            raise NotImplementedError(f"Backbone {backbone} is not supported yet.")
 
     def forward(self, x):
         return self.backbone(x)
