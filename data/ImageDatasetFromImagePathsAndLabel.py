@@ -9,7 +9,7 @@ class ImageDatasetFromImagePathsAndLabel(torch.utils.data.Dataset):
         self.target_transform = target_transform
     
     def __len__(self):
-        return len(self.img_labels)
+        return len(self.imagePaths)
     
     def __getitem__(self, idx):
         image = torchvision.io.read_image(self.imagePaths[idx])
