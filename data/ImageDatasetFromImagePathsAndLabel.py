@@ -12,8 +12,7 @@ class ImageDatasetFromImagePathsAndLabel(torch.utils.data.Dataset):
         return len(self.imagePaths)
     
     def __getitem__(self, idx):
-        image = torchvision.io.read_image(self.imagePaths[idx])
-        print(image)
+        image = torchvision.io.read_image(self.imagePaths[idx]).FloatTensor
         label = self.labels[idx]
         if self.transform:
             image = self.transform(image)
