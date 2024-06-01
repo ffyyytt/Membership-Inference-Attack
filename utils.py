@@ -8,5 +8,5 @@ def trainModel(dataLoader, device, n_classes):
     loss_fn=torch.nn.CrossEntropyLoss().to(device)
 
     train_unit = MyTrainUnit(module=model, optimizer=optimizer, lr_scheduler=scheduler, loss_fn=loss_fn)
-    torchtnt.framework.train(train_unit, dataLoader, max_epochs=20, device=device)
+    torchtnt.framework.train(train_unit, dataLoader, max_epochs=20)
     return model
