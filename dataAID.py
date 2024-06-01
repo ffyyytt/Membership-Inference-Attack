@@ -68,7 +68,7 @@ def loadCenShadowAID():
         if i in __AID_TRAIN_SET__:
             imagePaths += X[test_index].tolist()
             labels += Y[test_index].tolist()
-    return imagePaths, labels
+    return np.array(imagePaths), np.array(labels)
 
 def loadCenShadowTrainAID(idx, device):
     imagePaths, labels = [], []
