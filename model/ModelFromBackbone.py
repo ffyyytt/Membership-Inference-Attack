@@ -9,7 +9,7 @@ class ModelFromBackbone(torch.nn.Module):
         if hasattr(self.backbone, 'fc'):
             self.backbone.fc = torch.nn.Linear(self.backbone.fc.in_features, num_classes)
         elif hasattr(self.backbone, 'classifier') and isinstance(self.backbone.classifier, torch.nn.Sequential):
-            self.backbone.classifier = torch.nn.Linear(self.backbone.classifier.in_features, num_classes)
+            self.backbone.classifier = torch.nn.Linear(self.backbone.last_channel, num_classes)
         else:
             raise NotImplementedError(f"Backbone {backbone} is not supported yet.")
 
