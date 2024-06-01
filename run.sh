@@ -9,4 +9,4 @@
 #SBATCH --mail-type FAIL,END
 
 conda activate ffyytt
-python3 main.py
+python3 main_cen.py
