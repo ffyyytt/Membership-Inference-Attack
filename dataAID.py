@@ -42,7 +42,7 @@ def _loadAID():
 
     # One-hot
     for k, v in labelset.items():
-        labelset[k] = [0]*v + [1] + [0]*(len(labelset)-v-1)
+        labelset[k] = [0.]*v + [1.] + [0.]*(len(labelset)-v-1)
 
     # map
     imagePaths = np.array(imagePaths)
