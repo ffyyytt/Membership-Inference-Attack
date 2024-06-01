@@ -2,9 +2,10 @@ import torch
 import torchvision
 
 class ImageDatasetFromImagePathsAndLabel(torch.utils.data.Dataset):
-    def __init__(self, imagePaths, labels, transform=None, target_transform=None):
+    def __init__(self, imagePaths, labels, device, transform=None, target_transform=None):
         self.imagePaths = imagePaths
         self.labels = labels
+        self.device = device
         self.transform = transform
         self.target_transform = target_transform
     
@@ -18,4 +19,4 @@ class ImageDatasetFromImagePathsAndLabel(torch.utils.data.Dataset):
             image = self.transform(image)
         if self.target_transform:
             label = self.target_transform(label)
-        return image, label
+        return image.to(self.device), label.to(self.device)

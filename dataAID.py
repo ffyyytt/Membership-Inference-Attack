@@ -50,7 +50,7 @@ def _loadAID():
 
     return imagePaths, labels
 
-def loadCenTrainAID():
+def loadCenTrainAID(device):
     imagePaths, labels = [], []
     X, Y = _loadAID()
     skf = StratifiedKFold(n_splits=8, shuffle=True, random_state=__RANDOM__SEED__)
@@ -58,7 +58,7 @@ def loadCenTrainAID():
         if i in __AID_SHADOW__SET:
             imagePaths += list(X[test_index])
             labels += list(Y[test_index])
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=True)
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=True)
 
 def loadCenShadowAID():
     imagePaths, labels = [], []
@@ -70,7 +70,7 @@ def loadCenShadowAID():
             labels += list(Y[test_index])
     return imagePaths, labels
 
-def loadCenShadowTrainAID(idx):
+def loadCenShadowTrainAID(idx, device):
     imagePaths, labels = [], []
     X, Y = loadCenShadowAID()
     sss = StratifiedShuffleSplit(n_splits=128, shuffle=True, test_size=len(__AID_TRAIN_SET__)/len(__AID_SHADOW__SET), random_state=__RANDOM__SEED__)
@@ -78,4 +78,4 @@ def loadCenShadowTrainAID(idx):
         if i == idx:
             imagePaths += list(X[test_index])
             labels += list(Y[test_index])
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=True)
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=True)
