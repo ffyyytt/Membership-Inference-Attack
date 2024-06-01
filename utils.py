@@ -1,7 +1,7 @@
 from model.ModelFromBackbone import *
 from model.unit import *
 
-def trainModel(dataLoader, device, n_classes, backbone = "MobileNetV2"):
+def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v3_small"):
     model = ModelFromBackbone(backbone, n_classes).to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9, weight_decay=1e-3)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
