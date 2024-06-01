@@ -5,7 +5,7 @@ class ImageDatasetFromImagePathsAndLabel(torch.utils.data.Dataset):
     def __init__(self, imagePaths, labels, device, transform=None, target_transform=None):
         self.device = device
         self.imagePaths = imagePaths
-        self.labels = torch.Tensor(labels).to(self.device)
+        self.labels = torch.Tensor(np.array(labels)).to(self.device)
         self.transform = transform
         self.target_transform = target_transform
     
