@@ -1,6 +1,8 @@
 import torch
 import torchvision
 
+from torchvision.models import models
+
 class ModelFromBackbone(torch.nn.Module):
     def __init__(self, backbone, num_classes):
         super().__init__()
