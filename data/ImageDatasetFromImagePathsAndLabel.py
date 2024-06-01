@@ -4,7 +4,7 @@ import torchvision
 class ImageDatasetFromImagePathsAndLabel(torch.utils.data.Dataset):
     def __init__(self, imagePaths, labels, device, transform=None, target_transform=None):
         self.imagePaths = imagePaths
-        self.labels = labels
+        self.labels = torch.from_numpy(labels).to(self.device)
         self.device = device
         self.transform = transform
         self.target_transform = target_transform
@@ -13,10 +13,10 @@ class ImageDatasetFromImagePathsAndLabel(torch.utils.data.Dataset):
         return len(self.imagePaths)
     
     def __getitem__(self, idx):
-        image = torchvision.io.read_image(self.imagePaths[idx]).to(torch.float32)
+        image = torchvision.io.read_image(self.imagePaths[idx]).to(torch.float32).to(self.device)
         label = self.labels[idx]
         if self.transform:
             image = self.transform(image)
         if self.target_transform:
             label = self.target_transform(label)
-        return image.to(self.device), label.to(self.device)
+        return image, label
