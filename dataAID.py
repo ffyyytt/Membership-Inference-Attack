@@ -5,13 +5,16 @@ import torchvision
 
 import numpy as np
 
+from torchvision.transforms import v2
+
 from data.ImageDatasetFromImagePathsAndLabel import *
 from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
 
 __RANDOM__SEED__ = 1312
 
-# 0, 1: Train
-# 2: non-mem
+# 0: Train, Member
+# 1: Train
+# 2: Non-mem
 # 3-7: Shadow
 
 __AID_N_CLASSES__ = 30
@@ -55,7 +58,7 @@ def loadCenTrainAID():
         if i in __AID_SHADOW__SET:
             imagePaths += X[test_index]
             labels += Y[test_index]
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__)
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=True)
 
 def loadCenShadowAID():
     imagePaths, labels = [], []
@@ -75,4 +78,4 @@ def loadCenShadowTrainAID(idx):
         if i == idx:
             imagePaths += X[test_index]
             labels += Y[test_index]
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__)
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=True)
