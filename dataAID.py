@@ -58,7 +58,6 @@ def loadCenTrainAID():
         if i in __AID_SHADOW__SET:
             imagePaths += list(X[test_index])
             labels += list(Y[test_index])
-    print(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, __AID_TRANSFORMS__)[0])
     return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=True)
 
 def loadCenShadowAID():
