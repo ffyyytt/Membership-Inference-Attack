@@ -4,7 +4,7 @@ import torchvision
 class ImageDatasetFromImagePathsAndLabel(torch.utils.data.Dataset):
     def __init__(self, imagePaths, labels, device, transform=None, target_transform=None):
         self.imagePaths = imagePaths
-        self.labels = torch.from_numpy(labels).to(self.device)
+        self.labels = torch.Tensor(labels).to(self.device)
         self.device = device
         self.transform = transform
         self.target_transform = target_transform
