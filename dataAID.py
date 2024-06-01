@@ -73,7 +73,7 @@ def loadCenShadowAID():
 def loadCenShadowTrainAID(idx, device):
     imagePaths, labels = [], []
     X, Y = loadCenShadowAID()
-    sss = StratifiedShuffleSplit(n_splits=128, shuffle=True, test_size=len(__AID_TRAIN_SET__)/len(__AID_SHADOW__SET), random_state=__RANDOM__SEED__)
+    sss = StratifiedShuffleSplit(n_splits=128, test_size=len(__AID_TRAIN_SET__)/len(__AID_SHADOW__SET), random_state=__RANDOM__SEED__)
     for i, (train_index, test_index) in enumerate(sss.split(X, np.argmax(Y, axis=1))):
         if i == idx:
             imagePaths += X[test_index].tolist()
