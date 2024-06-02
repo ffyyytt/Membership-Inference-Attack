@@ -10,3 +10,9 @@ def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2"):
     train_unit = MyTrainUnit(module=model, optimizer=optimizer, lr_scheduler=scheduler, loss_fn=loss_fn)
     torchtnt.framework.train(train_unit, dataLoader, max_epochs=20)
     return model
+
+def modelPredict(model, dataLoader, device):
+    model = model.to(device)
+    train_unit = MyPredictUnit(module=model)
+    print(torchtnt.framework.predict(train_unit, dataLoader))
+    return model
