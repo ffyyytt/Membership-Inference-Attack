@@ -35,7 +35,7 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         self.optimizer.zero_grad()
 
     def on_train_epoch_start(self, state: torchtnt.framework.state.State) -> None:
-        self.tqdm = tqdm(total=self.totalSteps+1)
+        self.tqdm = tqdm(total=self.totalSteps)
 
     def on_train_epoch_end(self, state: torchtnt.framework.state.State) -> None:
         self.lr_scheduler.step()
@@ -47,11 +47,16 @@ class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
     def __init__(
         self,
         module: torch.nn.Module,
+        totalSteps = None,
     ):
         super().__init__()
         self.module = module
         self.outputs = np.array([])
         self.labels = np.array([])
+        self.totalSteps = totalSteps
+
+    def on_predict_epoch_start(self, state: torchtnt.framework.state.State) -> None:
+        self.tqdm = tqdm(total=self.totalSteps)
 
     def predict_step(self, state: torchtnt.framework.state.State, data: Batch) -> torch.tensor:
         inputs, targets = data
@@ -59,3 +64,6 @@ class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
         self.outputs = np.append(self.outputs, outputs.detach().cpu().numpy(), axis=0)
         self.labels = np.append(self.targets, targets.detach().cpu().numpy(), axis=0)
         return outputs
+    
+    def on_predict_epoch_end(self, state: torchtnt.framework.state.State) -> None:
+        self.tqdm.close()
