@@ -15,5 +15,5 @@ def modelPredict(model, dataLoader, device):
     model = model.to(device)
     predUnit = MyPredictUnit(module=model)
     print(torchtnt.framework.predict(predUnit, dataLoader))
-    print(dir(predUnit))
+    print(vars(predUnit))
     return predUnit
