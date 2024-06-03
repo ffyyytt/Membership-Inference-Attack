@@ -7,7 +7,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 cenTrainDataLoader = dataAID.loadCenTrainAID(device)
 
 cenModel = trainModel(cenTrainDataLoader, device, dataAID.__AID_N_CLASSES__)
-modelPredict(cenModel, cenTrainDataLoader, device)
+print(modelPredict(cenModel, cenTrainDataLoader, device))
 # with open('pred.pickle', 'wb') as handle:
 #     pickle.dump(modelPredict(cenModel, cenTrainDataLoader, device), handle, protocol=pickle.HIGHEST_PROTOCOL)
 

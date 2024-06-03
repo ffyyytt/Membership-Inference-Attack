@@ -15,14 +15,5 @@ def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2"):
 def modelPredict(model, dataLoader, device):
     model = model.to(device)
     predUnit = MyPredictUnit(module=model)
-
-    predictions = []
-    def collect_predictions(state, unit):
-        outputs = unit.compute(state.batch)
-        predictions.extend(outputs.detach().cpu().numpy())
-    predUnit.on_predict_step_end(collect_predictions)
-
-    print(torchtnt.framework.predict(predUnit, dataLoader))
-    print(vars(predUnit))
-    print(predictions)
-    return predUnit
+    torchtnt.framework.predict(predUnit, dataLoader)
+    return predUnit.outputs
