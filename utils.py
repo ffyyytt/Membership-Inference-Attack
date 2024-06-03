@@ -13,6 +13,7 @@ def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2"):
 
 def modelPredict(model, dataLoader, device):
     model = model.to(device)
-    train_unit = MyPredictUnit(module=model)
-    print(torchtnt.framework.predict(train_unit, dataLoader))
-    return model
+    predUnit = MyPredictUnit(module=model)
+    print(torchtnt.framework.predict(predUnit, dataLoader))
+    print(dir(predUnit))
+    return predUnit

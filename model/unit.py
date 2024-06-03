@@ -31,7 +31,6 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
 
     def on_train_epoch_end(self, state: torchtnt.framework.state.State) -> None:
         self.lr_scheduler.step()
-        print("EPOCH END")
 
 class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
     def __init__(
