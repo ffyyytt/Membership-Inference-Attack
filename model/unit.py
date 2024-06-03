@@ -42,7 +42,6 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         if not self.totalSteps:
             self.totalSteps = self.tqdm.n
         self.tqdm.close()
-        self.tqdm = tqdm(total=self.totalSteps+1)
 
 class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
     def __init__(
