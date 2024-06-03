@@ -1,6 +1,7 @@
 from model.ModelFromBackbone import *
 from model.unit import *
 
+
 def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2"):
     model = ModelFromBackbone(backbone, n_classes).to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=0.001, momentum=0.9, weight_decay=1e-3)
@@ -14,6 +15,14 @@ def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2"):
 def modelPredict(model, dataLoader, device):
     model = model.to(device)
     predUnit = MyPredictUnit(module=model)
+
+    predictions = []
+    def collect_predictions(state, unit):
+        outputs = unit.compute(state.batch)
+        predictions.extend(outputs.detach().cpu().numpy())
+    predUnit.on_predict_step_end(collect_predictions)
+
     print(torchtnt.framework.predict(predUnit, dataLoader))
     print(vars(predUnit))
+    print(predictions)
     return predUnit
