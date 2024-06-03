@@ -49,8 +49,12 @@ class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
     ):
         super().__init__()
         self.module = module
+        self.outputs = []
+        self.labels = []
 
     def predict_step(self, state: torchtnt.framework.state.State, data: Batch) -> torch.tensor:
         inputs, targets = data
         outputs = self.module(inputs)
-        return outputs, targets
+        self.outputs.extend(outputs.detach().cpu().numpy().tolist())
+        self.labels.extend(targets.detach().cpu().numpy().tolist())
+        return outputs
