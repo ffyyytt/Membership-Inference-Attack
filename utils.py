@@ -7,7 +7,7 @@ def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2"):
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
     loss_fn=torch.nn.CrossEntropyLoss().to(device)
 
-    train_unit = MyTrainUnit(module=model, optimizer=optimizer, lr_scheduler=scheduler, loss_fn=loss_fn)
+    train_unit = MyTrainUnit(module=model, optimizer=optimizer, lr_scheduler=scheduler, loss_fn=loss_fn, totalSteps=len(dataLoader))
     torchtnt.framework.train(train_unit, dataLoader, max_epochs=20)
     return model
 
