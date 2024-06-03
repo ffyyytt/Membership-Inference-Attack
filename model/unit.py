@@ -66,7 +66,7 @@ class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
             self.labels = targets.detach().cpu().numpy()
         else:
             self.outputs = np.append(self.outputs, outputs.detach().cpu().numpy(), axis=0)
-            self.labels = np.append(self.targets, targets.detach().cpu().numpy(), axis=0)
+            self.labels = np.append(self.labels, targets.detach().cpu().numpy(), axis=0)
         return outputs
     
     def on_predict_epoch_end(self, state: torchtnt.framework.state.State) -> None:
