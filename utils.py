@@ -9,7 +9,7 @@ def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2"):
     loss_fn=torch.nn.CrossEntropyLoss().to(device)
 
     train_unit = MyTrainUnit(module=model, optimizer=optimizer, lr_scheduler=scheduler, loss_fn=loss_fn, totalSteps=len(dataLoader))
-    torchtnt.framework.train(train_unit, dataLoader, max_epochs=2)
+    torchtnt.framework.train(train_unit, dataLoader, max_epochs=20)
     return model
 
 def modelPredict(model, dataLoader, device):
