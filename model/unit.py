@@ -32,14 +32,14 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         self.optimizer.zero_grad()
 
     def on_train_epoch_end(self, state: torchtnt.framework.state.State) -> None:
-        self.tqdm = tqdm(total=len(self.totalSteps))
+        self.tqdm = tqdm(total=self.totalSteps)
 
     def on_train_epoch_end(self, state: torchtnt.framework.state.State) -> None:
         self.lr_scheduler.step()
         if not self.totalSteps:
-            print(self.tqdm.n)
             self.totalSteps = self.tqdm.n
-        self.tqdm = tqdm(total=len(self.totalSteps))
+        print(self.tqdm.n)
+        self.tqdm = tqdm(total=self.totalSteps)
 
 class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
     def __init__(
