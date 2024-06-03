@@ -39,6 +39,7 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         self.lr_scheduler.step()
         if not self.totalSteps:
             self.totalSteps = self.tqdm.n
+        print(self.tqdm.n)
         self.tqdm = tqdm(total=self.totalSteps)
 
 class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
