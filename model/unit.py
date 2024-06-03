@@ -59,6 +59,7 @@ class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
         self.tqdm = tqdm(total=self.totalSteps)
 
     def predict_step(self, state: torchtnt.framework.state.State, data: Batch) -> torch.tensor:
+        self.tqdm.update(1)
         inputs, targets = data
         outputs = self.module(inputs)
         if len(self.outputs) == 0:
