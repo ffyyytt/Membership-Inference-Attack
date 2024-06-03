@@ -1,6 +1,7 @@
 import torch
 import torchtnt
 
+from tqdm import *
 from typing import *
 from torchtnt import framework
 
@@ -12,13 +13,14 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         module: torch.nn.Module,
         optimizer: torch.optim.Optimizer,
         lr_scheduler: torch.optim.lr_scheduler._LRScheduler,
-        loss_fn: torch.nn,
+        loss_fn: torch.nn, totalSteps = None,
     ):
         super().__init__()
         self.module = module
         self.optimizer = optimizer
         self.lr_scheduler = lr_scheduler
         self.loss_fn = loss_fn
+        self.totalSteps = totalSteps
 
     def train_step(self, state: torchtnt.framework.state.State, data: Batch) -> None:
         inputs, targets = data
@@ -29,8 +31,15 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         self.optimizer.step()
         self.optimizer.zero_grad()
 
+    def on_train_epoch_start(self):
+        self.tqdm = tqdm(total=len(self.totalSteps))
+
     def on_train_epoch_end(self, state: torchtnt.framework.state.State) -> None:
         self.lr_scheduler.step()
+        if not self.totalSteps:
+            print(self.tqdm.n)
+            self.totalSteps = self.tqdm.n
+        self.tqdm = tqdm(total=len(self.totalSteps))
 
 class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
     def __init__(
