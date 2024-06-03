@@ -31,7 +31,7 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         self.optimizer.step()
         self.optimizer.zero_grad()
 
-    def on_train_epoch_start(self):
+    def on_train_epoch_end(self, state: torchtnt.framework.state.State) -> None:
         self.tqdm = tqdm(total=len(self.totalSteps))
 
     def on_train_epoch_end(self, state: torchtnt.framework.state.State) -> None:
