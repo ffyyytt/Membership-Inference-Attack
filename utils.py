@@ -16,4 +16,5 @@ def modelPredict(model, dataLoader, device):
     model = model.to(device)
     predUnit = MyPredictUnit(module=model)
     torchtnt.framework.predict(predUnit, dataLoader)
+    print(np.mean(np.argmax(predUnit.outputs, axis=1) == np.argmax(predUnit.labels, axis=1)))
     return predUnit.outputs
