@@ -61,8 +61,12 @@ class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
     def predict_step(self, state: torchtnt.framework.state.State, data: Batch) -> torch.tensor:
         inputs, targets = data
         outputs = self.module(inputs)
-        self.outputs = np.append(self.outputs, outputs.detach().cpu().numpy(), axis=0)
-        self.labels = np.append(self.targets, targets.detach().cpu().numpy(), axis=0)
+        if len(self.outputs) == 0:
+            self.outputs = outputs.detach().cpu().numpy()
+            self.labels = targets.detach().cpu().numpy()
+        else:
+            self.outputs = np.append(self.outputs, outputs.detach().cpu().numpy(), axis=0)
+            self.labels = np.append(self.targets, targets.detach().cpu().numpy(), axis=0)
         return outputs
     
     def on_predict_epoch_end(self, state: torchtnt.framework.state.State) -> None:
