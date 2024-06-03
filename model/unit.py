@@ -23,6 +23,7 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         self.totalSteps = totalSteps
 
     def train_step(self, state: torchtnt.framework.state.State, data: Batch) -> None:
+        self.tqdm.update(1)
         inputs, targets = data
         outputs = self.module(inputs)
         loss = self.loss_fn(outputs, targets)
@@ -38,7 +39,6 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         self.lr_scheduler.step()
         if not self.totalSteps:
             self.totalSteps = self.tqdm.n
-        print(self.tqdm.n)
         self.tqdm = tqdm(total=self.totalSteps)
 
 class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
