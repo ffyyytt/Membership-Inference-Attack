@@ -12,7 +12,7 @@ yPred = modelPredict(cenModel, miaDataLoader, device)
 
 shadowPreds = []
 shadowModels = []
-for i in range(16):
+for i in range(5):
     shadowDataLoader = dataAID.loadCenShadowTrainAID(i, device)
     shadowModels.append(trainModel(shadowDataLoader, device, dataAID.__AID_N_CLASSES__))
     shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device))
