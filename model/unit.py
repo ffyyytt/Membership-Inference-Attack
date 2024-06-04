@@ -23,6 +23,7 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         self.lr_scheduler = lr_scheduler
         self.loss_fn = loss_fn
         self.totalSteps = totalSteps
+        self.currentEpoch = 0
 
     def train_step(self, state: torchtnt.framework.state.State, data: Batch) -> None:
         self.tqdm.update(1)
@@ -36,6 +37,8 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
 
     def on_train_epoch_start(self, state: torchtnt.framework.state.State) -> None:
         self.tqdm = tqdm(total=self.totalSteps)
+        self.currentEpoch += 1
+        print(f"Epoch {self.currentEpoch}:", end=" ")
 
     def on_train_epoch_end(self, state: torchtnt.framework.state.State) -> None:
         self.lr_scheduler.step()
