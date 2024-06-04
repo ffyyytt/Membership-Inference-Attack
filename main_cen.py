@@ -10,9 +10,11 @@ miaDataLoader = dataAID.loadMIADataAID(device)
 cenModel = trainModel(cenTrainDataLoader, device, dataAID.__AID_N_CLASSES__)
 yPred = modelPredict(cenModel, miaDataLoader, device)
 
-shadowPred = []
+shadowPreds = []
 shadowModels = []
-for i in range(128):
+for i in range(16):
     shadowDataLoader = dataAID.loadCenShadowTrainAID(i, device)
     shadowModels.append(trainModel(shadowDataLoader, device, dataAID.__AID_N_CLASSES__))
-    shadowPred.append(modelPredict(shadowModels[-1], miaDataLoader, device))
+    shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device))
+
+print(computeMIAScore(yPred, shadowPreds))

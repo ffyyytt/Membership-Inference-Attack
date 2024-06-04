@@ -1,3 +1,5 @@
+import scipy
+
 from model.ModelFromBackbone import *
 from model.unit import *
 
@@ -8,12 +10,21 @@ def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2"):
     loss_fn=torch.nn.CrossEntropyLoss().to(device)
 
     train_unit = MyTrainUnit(module=model, optimizer=optimizer, lr_scheduler=scheduler, loss_fn=loss_fn, totalSteps=len(dataLoader))
-    torchtnt.framework.train(train_unit, dataLoader, max_epochs=50)
+    torchtnt.framework.train(train_unit, dataLoader, max_epochs=5)
     return model
 
 def modelPredict(model, dataLoader, device):
     model = model.to(device)
     predUnit = MyPredictUnit(module=model)
     torchtnt.framework.predict(predUnit, dataLoader)
-    print(np.mean(np.argmax(predUnit.outputs, axis=1) == np.argmax(predUnit.labels, axis=1)))
-    return predUnit.outputs
+    return predUnit.outputs, predUnit.labels
+
+def probabilityNormalDistribution(data, p):
+    mean = np.mean(data)
+    std = np.std(data)    
+    return scipy.stats.norm.cdf((p - mean) / std)
+
+def computeMIAScore(yPred, shadowPreds):
+    trueShadowPred = np.array([shadowPreds[i][0][np.argmax(shadowPreds[i][1])] for i in range(len(shadowPreds))])
+    scores = [1-probabilityNormalDistribution(yPred[i], trueShadowPred[: i]) for i in range(len(shadowPreds))]
+    return scores

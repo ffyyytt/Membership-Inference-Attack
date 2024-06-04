@@ -59,7 +59,7 @@ def loadCenTrainAID(device):
         if i in __AID_TRAIN_SET__:
             imagePaths += X[test_index].tolist()
             labels += Y[test_index].tolist()
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=True)
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=False)
 
 def loadCenShadowAID():
     imagePaths, labels = [], []
@@ -79,7 +79,7 @@ def loadCenShadowTrainAID(idx, device):
         if i == idx:
             imagePaths += X[test_index].tolist()
             labels += Y[test_index].tolist()
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=True)
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=False)
 
 def loadMIADataAID(device):
     imagePaths, labels = [], []
@@ -89,4 +89,4 @@ def loadMIADataAID(device):
         if i in __AID_MEMBER_SET__+__AID_NON_MEM_SET__:
             imagePaths += X[test_index].tolist()
             labels += Y[test_index].tolist()
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=True)
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=False)
