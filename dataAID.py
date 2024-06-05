@@ -76,9 +76,7 @@ def loadClientsTrainAID(device, nClients):
     trainloaders = []
     skf = StratifiedKFold(n_splits=nClients, shuffle=True, random_state=__RANDOM__SEED__)
     for i, (train_index, test_index) in enumerate(skf.split(imagePaths, np.argmax(labels, axis=1))):
-        imagePaths += X[test_index].tolist()
-        labels += Y[test_index].tolist()
-        trainloaders.append(torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=False))
+        trainloaders.append(torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths[test_index].tolist(), labels[test_index].tolist(), device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=False))
     return trainloaders
 
 def loadCenShadowAID():
