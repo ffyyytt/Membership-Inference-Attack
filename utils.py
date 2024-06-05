@@ -4,7 +4,7 @@ import flwr as fl
 from model.ModelFromBackbone import *
 from model.unit import *
 
-def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2", epochs = 5):
+def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2", epochs = 50):
     model = ModelFromBackbone(backbone, n_classes)
     trainModelWithModel(dataLoader, device, model, epochs)
     return model
