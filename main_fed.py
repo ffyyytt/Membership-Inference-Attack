@@ -21,10 +21,10 @@ if device.type == "cuda":
 
 strategy = FLSetup(n_classes, device, backbone, nClients, 5)
 
-# fl.simulation.start_simulation(
-#     client_fn=client_fn,
-#     num_clients=nClients,
-#     config=fl.server.ServerConfig(num_rounds=10),
-#     strategy=strategy,
-#     client_resources=client_resources,
-# )
+fl.simulation.start_simulation(
+    client_fn=client_fn,
+    num_clients=nClients,
+    config=fl.server.ServerConfig(num_rounds=2),
+    strategy=strategy,
+    client_resources=client_resources,
+)
