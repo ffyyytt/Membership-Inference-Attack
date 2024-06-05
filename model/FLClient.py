@@ -3,6 +3,8 @@ import torch
 import flwr as fl
 import numpy as np
 
+from sklearn.metrics import mean_squared_error
+
 from typing import *
 from model.unit import *
 
@@ -37,7 +39,7 @@ class FlowerClient(fl.client.NumPyClient):
         print(f"[Client {self.cid}] evaluate, config: {config}")
         FLset_parameters(self.net, parameters)
         output, label = self.__FLmodelPredict(self.net, self.valloader, self.device)
-        loss = torch.nn.functional.mse_loss(output, label)
+        loss = mean_squared_error(label, output)
         accuracy = np.mean(np.argmax(output, axis=1)==np.argmax(label, axis=1))
         return float(loss), len(self.valloader), {"accuracy": float(accuracy)}
     
