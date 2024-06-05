@@ -27,7 +27,7 @@ def modelPredict(model, dataLoader, device):
 
 def probabilityNormalDistribution(data, p, eps=1e-6):
     mean = np.mean(data)
-    std = np.max(np.std(data), eps)
+    std = max(np.std(data), eps)
     return scipy.stats.norm.cdf((p - mean) / std)
 
 def computeMIAScore(yPred, shadowPreds):
