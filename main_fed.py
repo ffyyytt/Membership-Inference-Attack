@@ -13,7 +13,7 @@ def client_fn(cid) -> FlowerClient:
     net = ModelFromBackbone(backbone, n_classes)
     trainLoader = trainLoaders[int(cid)]
     validLoader = validLoaders[int(cid)]
-    return FlowerClient(cid, net, device, trainLoader, validLoader, 5)
+    return FlowerClient(cid, net, device, trainLoader, validLoader, 5).to_client()
 
 client_resources = None
 if device.type == "cuda":
