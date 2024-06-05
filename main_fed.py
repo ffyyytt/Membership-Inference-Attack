@@ -17,7 +17,7 @@ def client_fn(cid) -> FlowerClient:
 
 client_resources = None
 if device.type == "cuda":
-    client_resources = {"num_cpus": 8, "num_gpus": 1}
+    client_resources = {"num_cpus": 8, "num_gpus": 2}
 
 strategy = FLSetup(n_classes, device, backbone, nClients, 10)
 
