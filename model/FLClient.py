@@ -15,11 +15,13 @@ def FLset_parameters(net, parameters: List[np.ndarray]):
     net.load_state_dict(state_dict, strict=True)
 
 class FlowerClient(fl.client.NumPyClient):
-    def __init__(self, cid, net, trainloader, valloader):
+    def __init__(self, cid, net, device, trainloader, valloader, localEpochs):
         self.cid = cid
         self.net = net
+        self.device = device
         self.trainloader = trainloader
         self.valloader = valloader
+        self.localEpochs = localEpochs
 
     def get_parameters(self, config):
         print(f"[Client {self.cid}] get_parameters")
@@ -28,16 +30,18 @@ class FlowerClient(fl.client.NumPyClient):
     def fit(self, parameters, config):
         print(f"[Client {self.cid}] fit, config: {config}")
         FLset_parameters(self.net, parameters)
-        __FLtrainModelWithModel(self.net, self.trainloader, epochs=1)
+        __FLtrainModelWithModel(self.net, self.trainloader, self.device , epochs=self.localEpochs)
         return FLget_parameters(self.net), len(self.trainloader), {}
 
     def evaluate(self, parameters, config):
         print(f"[Client {self.cid}] evaluate, config: {config}")
         FLset_parameters(self.net, parameters)
-        loss, accuracy = test(self.net, self.valloader)
+        output, label = __FLmodelPredict(self.net, self.valloader)
+        loss = torch.nn.functional.mse_loss(output, label)
+        accuracy = np.mean(np.argmax(output, axis=1)==np.argmax(label, axis=1))
         return float(loss), len(self.valloader), {"accuracy": float(accuracy)}
     
-def __FLtrainModelWithModel(dataLoader, device, model, epochs):
+def __FLtrainModelWithModel(model, dataLoader, device, epochs):
     model = model.to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-2, momentum=0.9, weight_decay=1e-3)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
@@ -47,9 +51,8 @@ def __FLtrainModelWithModel(dataLoader, device, model, epochs):
     torchtnt.framework.train(train_unit, dataLoader, max_epochs=epochs)
     return model
 
-
-def client_fn(cid) -> FlowerClient:
-    net = Net().to(DEVICE)
-    trainloader = trainloaders[int(cid)]
-    valloader = valloaders[int(cid)]
-    return FlowerClient(cid, net, trainloader, valloader)
+def __FLmodelPredict(model, dataLoader, device):
+    model = model.to(device)
+    predUnit = MyPredictUnit(module=model)
+    torchtnt.framework.predict(predUnit, dataLoader)
+    return predUnit.outputs, predUnit.labels

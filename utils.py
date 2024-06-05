@@ -1,8 +1,9 @@
 import scipy
 import flwr as fl
 
-from model.ModelFromBackbone import *
 from model.unit import *
+from model.FLClient import *
+from model.ModelFromBackbone import *
 
 def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2", epochs = 50):
     model = ModelFromBackbone(backbone, n_classes)
@@ -39,3 +40,15 @@ def computeMIAScore(yPred, shadowPreds):
     trueShadowPred = np.array([np.max(shadowPreds[i][0]*shadowPreds[i][1], axis=1) for i in range(len(shadowPreds))])
     scores = minMaxScale([1-probabilityNormalDistribution(trueShadowPred[:, i], trueYPred[i]) for i in range(len(trueYPred))])
     return scores
+
+def FLSetup(n_classes, device, backbone = "mobilenet_v2", nClients=10, localEpochs=5):
+    params = FLget_parameters(ModelFromBackbone(backbone, n_classes))
+    strategy = fl.server.strategy.FedAvg(
+        fraction_fit=1.,
+        fraction_evaluate=1.,
+        min_fit_clients=nClients,
+        min_evaluate_clients=nClients,
+        min_available_clients=nClients,
+        initial_parameters=fl.common.ndarrays_to_parameters(params),
+    )
+    return strategy
