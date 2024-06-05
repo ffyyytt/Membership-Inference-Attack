@@ -43,6 +43,7 @@ def computeMIAScore(yPred, shadowPreds):
 
 def FLSetup(n_classes, device, backbone = "mobilenet_v2", nClients=10, localEpochs=5):
     params = FLget_parameters(ModelFromBackbone(backbone, n_classes))
+    print(params)
     strategy = fl.server.strategy.FedAvg(
         fraction_fit=1.,
         fraction_evaluate=1.,
