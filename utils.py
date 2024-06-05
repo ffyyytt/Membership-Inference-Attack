@@ -41,7 +41,7 @@ def computeMIAScore(yPred, shadowPreds):
     scores = minMaxScale([1-probabilityNormalDistribution(trueShadowPred[:, i], trueYPred[i]) for i in range(len(trueYPred))])
     return scores
 
-def FLSetup(n_classes, device, backbone = "mobilenet_v2", nClients=10, localEpochs=5):
+def FLSetup(n_classes, device, backbone = "mobilenet_v2", nClients=10):
     params = FLget_parameters(ModelFromBackbone(backbone, n_classes))
     strategy = fl.server.strategy.FedAvg(
         fraction_fit=1.,
