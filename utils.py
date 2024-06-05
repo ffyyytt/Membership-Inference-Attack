@@ -25,9 +25,9 @@ def modelPredict(model, dataLoader, device):
     torchtnt.framework.predict(predUnit, dataLoader)
     return predUnit.outputs, predUnit.labels
 
-def probabilityNormalDistribution(data, p):
+def probabilityNormalDistribution(data, p, eps=1e-6):
     mean = np.mean(data)
-    std = np.std(data)    
+    std = np.max(np.std(data), eps)
     return scipy.stats.norm.cdf((p - mean) / std)
 
 def computeMIAScore(yPred, shadowPreds):
