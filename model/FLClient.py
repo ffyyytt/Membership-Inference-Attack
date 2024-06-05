@@ -13,8 +13,8 @@ def FLget_parameters(net) -> List[np.ndarray]:
 
 def FLset_parameters(net, parameters: List[np.ndarray]):
     params_dict = zip(net.state_dict().keys(), parameters)
-    state_dict = OrderedDict({k: torch.Tensor(v) for k, v in params_dict})
-    # net.load_state_dict(state_dict, strict=True)
+    state_dict = OrderedDict({k: torch.Tensor(v) for k, v in params_dict if len(v.shape)>0})
+    net.load_state_dict(state_dict, strict=True)
 
 class FlowerClient(fl.client.NumPyClient):
     def __init__(self, cid, net, device, trainloader, valloader, localEpochs):
