@@ -36,7 +36,7 @@ class FlowerClient(fl.client.NumPyClient):
     def evaluate(self, parameters, config):
         print(f"[Client {self.cid}] evaluate, config: {config}")
         FLset_parameters(self.net, parameters)
-        output, label = self.__FLmodelPredict(self.net, self.valloader)
+        output, label = self.__FLmodelPredict(self.net, self.valloader, self.device)
         loss = torch.nn.functional.mse_loss(output, label)
         accuracy = np.mean(np.argmax(output, axis=1)==np.argmax(label, axis=1))
         return float(loss), len(self.valloader), {"accuracy": float(accuracy)}
