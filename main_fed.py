@@ -3,7 +3,7 @@ import dataAID
 from utils import *
 
 nClients = 10
-backbone = "mobilenet_v2"
+backbone = "resnet18"
 n_classes = dataAID.__AID_N_CLASSES__
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 trainLoaders = dataAID.loadClientsTrainAID(device, nClients)
