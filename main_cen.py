@@ -17,4 +17,5 @@ for i in range(5):
     shadowModels.append(trainModel(shadowDataLoader, device, dataAID.__AID_N_CLASSES__))
     shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device))
 
-print(computeMIAScore(yPred, shadowPreds))
+scores = computeMIAScore(yPred, shadowPreds)
+print(np.mean(scores > 0.5 == np.array([0]*len(scores)//2+[1]*len(scores)//2)))

@@ -38,5 +38,4 @@ def computeMIAScore(yPred, shadowPreds):
     trueYPred = np.max(yPred[0]*yPred[1], axis=1)
     trueShadowPred = np.array([np.max(shadowPreds[i][0]*shadowPreds[i][1], axis=1) for i in range(len(shadowPreds))])
     scores = minMaxScale([1-probabilityNormalDistribution(trueShadowPred[:, i], trueYPred[i]) for i in range(len(trueYPred))])
-    print(np.mean(scores > 0.5 == np.array([0]*len(trueYPred)//2+[1]*len(trueYPred)//2)))
     return scores
