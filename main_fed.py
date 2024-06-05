@@ -6,8 +6,8 @@ nClients = 10
 backbone = "mobilenet_v2"
 n_classes = dataAID.__AID_N_CLASSES__
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-trainLoaders = dataAID.loadClientsTrainAID()
-validLoaders = dataAID.loadClientsTrainAID()
+trainLoaders = dataAID.loadClientsTrainAID(device, nClients)
+validLoaders = dataAID.loadClientsTrainAID(device, nClients)
 
 def client_fn(cid) -> FlowerClient:
     net = ModelFromBackbone(backbone, n_classes)
