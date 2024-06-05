@@ -16,6 +16,7 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         optimizer: torch.optim.Optimizer,
         lr_scheduler: torch.optim.lr_scheduler._LRScheduler,
         loss_fn: torch.nn, totalSteps = None,
+        verbose = 1, totalEpochs = 20
     ):
         super().__init__()
         self.module = module
@@ -24,9 +25,13 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         self.loss_fn = loss_fn
         self.totalSteps = totalSteps
         self.currentEpoch = 0
+        self.totalEpochs = totalEpochs
+        self.verbose = verbose
+        self.tqdm = None
 
     def train_step(self, state: torchtnt.framework.state.State, data: Batch) -> None:
-        self.tqdm.update(1)
+        if self.verbose == 1:
+            self.tqdm.update(1)
         inputs, targets = data
         outputs = self.module(inputs)
         loss = self.loss_fn(outputs, targets)
@@ -37,13 +42,19 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
 
     def on_train_epoch_start(self, state: torchtnt.framework.state.State) -> None:
         self.currentEpoch += 1
-        self.tqdm = tqdm(total=self.totalSteps, desc=f"Epoch {self.currentEpoch}")
+        if self.verbose == 1:
+            self.tqdm = tqdm(total=self.totalSteps, desc=f"Epoch {self.currentEpoch}/{self.totalEpochs}")
+        elif self.verbose == 2 and not self.tqdm:
+            self.tqdm = tqdm(total=self.totalEpochs)
 
     def on_train_epoch_end(self, state: torchtnt.framework.state.State) -> None:
         self.lr_scheduler.step()
-        if not self.totalSteps:
-            self.totalSteps = self.tqdm.n
-        self.tqdm.close()
+        if self.verbose==1:
+            if not self.totalSteps:
+                self.totalSteps = self.tqdm.n
+            self.tqdm.close()
+        elif self.verbose==2:
+            self.tqdm.update(1)
 
 class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
     def __init__(

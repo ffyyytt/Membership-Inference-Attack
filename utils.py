@@ -16,7 +16,7 @@ def trainModelWithModel(dataLoader, device, model, epochs):
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
     loss_fn=torch.nn.CrossEntropyLoss().to(device)
 
-    train_unit = MyTrainUnit(module=model, optimizer=optimizer, lr_scheduler=scheduler, loss_fn=loss_fn, totalSteps=len(dataLoader))
+    train_unit = MyTrainUnit(module=model, optimizer=optimizer, lr_scheduler=scheduler, loss_fn=loss_fn, totalSteps=len(dataLoader), totalEpochs=epochs)
     torchtnt.framework.train(train_unit, dataLoader, max_epochs=epochs)
     return model
 
