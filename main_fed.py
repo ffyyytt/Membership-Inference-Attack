@@ -19,7 +19,7 @@ client_resources = None
 if device.type == "cuda":
     client_resources = {"num_cpus": 8, "num_gpus": 1}
 
-strategy = FLSetup(n_classes, device, backbone, nClients, 5)
+strategy = FLSetup(n_classes, device, backbone, nClients, 10)
 
 fl.simulation.start_simulation(
     client_fn=client_fn,
@@ -28,3 +28,16 @@ fl.simulation.start_simulation(
     strategy=strategy,
     client_resources=client_resources,
 )
+
+shadowPreds = []
+shadowModels = []
+for i in range(128):
+    strategy = FLSetup(n_classes, device, backbone, nClients, 10)
+
+    print(fl.simulation.start_simulation(
+        client_fn=client_fn,
+        num_clients=nClients,
+        config=fl.server.ServerConfig(num_rounds=10),
+        strategy=strategy,
+        client_resources=client_resources,
+    ))
