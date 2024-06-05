@@ -31,7 +31,8 @@ def probabilityNormalDistribution(data, p):
     return scipy.stats.norm.cdf((p - mean) / std)
 
 def computeMIAScore(yPred, shadowPreds):
-    trueYPred = yPred[0][np.argmax(yPred[1], axis=1)]
-    trueShadowPred = np.array([shadowPreds[i][0][np.argmax(shadowPreds[i][1], axis=1)] for i in range(len(shadowPreds))])
+    trueYPred = np.max(yPred[0]*yPred[1], axis=1)
+    trueShadowPred = np.array([np.max(shadowPreds[i][0]*shadowPreds[i][1], axis=1) for i in range(len(shadowPreds))])
+    print(trueYPred, trueShadowPred)
     scores = [1-probabilityNormalDistribution(trueYPred[i], trueShadowPred[:, i]) for i in range(len(trueYPred))]
     return scores
