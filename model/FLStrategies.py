@@ -55,5 +55,5 @@ class MyFedAVG(fl.server.strategy.FedAVG):
         elif server_round == 1:  # Only log this warning once
             log(WARNING, "No fit_metrics_aggregation_fn provided")
 
-        self.parameters_aggregated
+        self.parameters_aggregated = parameters_aggregated
         return parameters_aggregated, metrics_aggregated
