@@ -36,10 +36,10 @@ shadowModels = []
 for i in range(128):
     strategy = FLSetup(n_classes, device, backbone, nClients)
 
-    print(fl.simulation.start_simulation(
+    fl.simulation.start_simulation(
         client_fn=client_fn,
         num_clients=nClients,
         config=fl.server.ServerConfig(num_rounds=rounds),
         strategy=strategy,
         client_resources=client_resources,
-    ))
+    )
