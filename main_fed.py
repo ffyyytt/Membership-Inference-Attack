@@ -10,6 +10,7 @@ n_classes = dataAID.__AID_N_CLASSES__
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 trainLoaders = dataAID.loadClientsTrainAID(device, nClients)
 validLoaders = dataAID.loadClientsTrainAID(device, nClients)
+miaDataLoader = dataAID.loadMIADataAID(device)
 
 def client_fn(cid) -> FlowerClient:
     net = ModelFromBackbone(backbone, n_classes)
@@ -31,6 +32,8 @@ fl.simulation.start_simulation(
     client_resources=client_resources,
 )
 
+yPred = FLModelPredict(strategy.parameters_aggregated, n_classes, backbone, miaDataLoader, device)
+
 shadowPreds = []
 shadowModels = []
 for i in range(128):
@@ -43,3 +46,8 @@ for i in range(128):
         strategy=strategy,
         client_resources=client_resources,
     )
+
+    shadowPreds.append(FLModelPredict(strategy.parameters_aggregated, n_classes, backbone, miaDataLoader, device))
+
+scores = computeMIAScore(yPred, shadowPreds)
+print(np.mean((scores > 0.5) == np.array([0]*(len(scores)//2)+[1]*(len(scores)//2))))
