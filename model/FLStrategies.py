@@ -19,8 +19,9 @@ from flwr.common.logger import log
 from flwr.server.client_proxy import ClientProxy
 from flwr.server.client_manager import ClientManager
 from flwr.server.strategy.aggregate import aggregate, aggregate_inplace, weighted_loss_avg
+from flwr.server.strategy.fedavg import FedAvg
 
-class MyFedAVG(fl.server.strategy.FedAVG):
+class MyFedAVG(FedAvg):
     def aggregate_fit(
         self,
         server_round: int,
