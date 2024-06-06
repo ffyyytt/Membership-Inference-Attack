@@ -6,18 +6,18 @@ from model.unit import *
 from model.FLClient import *
 from model.ModelFromBackbone import *
 
-def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2", epochs = 50):
+def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2", epochs = 50, verbose=2):
     model = ModelFromBackbone(backbone, n_classes)
-    trainModelWithModel(dataLoader, device, model, epochs)
+    trainModelWithModel(dataLoader, device, model, epochs, verbose)
     return model
 
-def trainModelWithModel(dataLoader, device, model, epochs):
+def trainModelWithModel(dataLoader, device, model, epochs, verbose=2):
     model = model.to(device)
     optimizer = torch.optim.SGD(model.parameters(), lr=1e-2, momentum=0.9, weight_decay=1e-3)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
     loss_fn=torch.nn.CrossEntropyLoss().to(device)
 
-    train_unit = MyTrainUnit(module=model, optimizer=optimizer, lr_scheduler=scheduler, loss_fn=loss_fn, totalSteps=len(dataLoader), totalEpochs=epochs)
+    train_unit = MyTrainUnit(module=model, optimizer=optimizer, lr_scheduler=scheduler, loss_fn=loss_fn, totalSteps=len(dataLoader), totalEpochs=epochs, verbose=verbose)
     torchtnt.framework.train(train_unit, dataLoader, max_epochs=epochs)
     return model
 
