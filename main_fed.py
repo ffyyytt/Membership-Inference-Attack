@@ -4,8 +4,8 @@ import dataAID
 from utils import *
 
 nClients = 10
-localEpochs = 1
-rounds = 1
+localEpochs = 10
+rounds = 10
 backbone = "resnet18"
 n_classes = dataAID.__AID_N_CLASSES__
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -51,5 +51,4 @@ for i in range(32):
     shadowPreds.append(FLModelPredict(strategy.parameters_aggregated, n_classes, backbone, miaDataLoader, device))
 
 scores = computeMIAScore(yPred, shadowPreds)
-time.sleep(30)
-print("Attack:", np.mean((scores > 0.5) == np.array([0]*(len(scores)//2)+[1]*(len(scores)//2))))
+print(f"\n\nAttack: {np.mean((scores > 0.5) == np.array([0]*(len(scores)//2)+[1]*(len(scores)//2)))}\n\n")
