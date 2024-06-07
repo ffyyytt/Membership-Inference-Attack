@@ -29,7 +29,7 @@ def trainModelWithModel(dataLoader, device, model, epochs, verbose=2):
 
 def FLModelPredict(parameters, n_classes, backbone, dataLoader, device):
     model = ModelFromBackbone(backbone, n_classes)
-    FLset_parameters(model, parameters)
+    FLset_parameters(model, parameters_to_ndarrays(parameters))
     model = model.to(device)
     predUnit = MyPredictUnit(module=model)
     torchtnt.framework.predict(predUnit, dataLoader)
