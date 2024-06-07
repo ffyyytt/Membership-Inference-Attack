@@ -1,3 +1,4 @@
+import os
 import scipy
 import flwr as fl
 
@@ -9,6 +10,10 @@ from model.ModelFromBackbone import *
 
 def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2", epochs = 50, verbose=2):
     model = ModelFromBackbone(backbone, n_classes)
+    if os.path.isfile(backbone+".weight"):
+        model.load_state_dict(torch.load(backbone+".weight"))
+    else:
+        torch.save(model.state_dict(), backbone+".weight")
     trainModelWithModel(dataLoader, device, model, epochs, verbose)
     return model
 
