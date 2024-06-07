@@ -56,8 +56,8 @@ class MyFedAVG(FedAvg):
         elif server_round == 1:  # Only log this warning once
             log(WARNING, "No fit_metrics_aggregation_fn provided")
 
-        self.parameters_aggregated = aggregated_ndarrays
-        return aggregated_ndarrays, metrics_aggregated
+        self.parameters_aggregated = parameters_aggregated
+        return parameters_aggregated, metrics_aggregated
 
 class MyFedProx(MyFedAVG):
     r"""Federated Optimization strategy.
