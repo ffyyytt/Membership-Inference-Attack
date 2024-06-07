@@ -1,3 +1,4 @@
+import time
 import torch
 import dataAID
 from utils import *
@@ -50,4 +51,5 @@ for i in range(32):
     shadowPreds.append(FLModelPredict(strategy.parameters_aggregated, n_classes, backbone, miaDataLoader, device))
 
 scores = computeMIAScore(yPred, shadowPreds)
-print(np.mean((scores > 0.5) == np.array([0]*(len(scores)//2)+[1]*(len(scores)//2))))
+time.sleep(30)
+print("Attack:", np.mean((scores > 0.5) == np.array([0]*(len(scores)//2)+[1]*(len(scores)//2))))
