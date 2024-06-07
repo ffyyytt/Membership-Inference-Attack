@@ -1,7 +1,7 @@
 import scipy
 import flwr as fl
 
-from model.FLStrategies import MyFedAVG
+from model.FLStrategies import *
 from model.unit import *
 from model.FLClient import *
 from model.ModelFromBackbone import *
@@ -52,7 +52,7 @@ def computeMIAScore(yPred, shadowPreds):
 
 def FLSetup(n_classes, device, backbone = "mobilenet_v2", nClients=10):
     params = FLget_parameters(ModelFromBackbone(backbone, n_classes))
-    strategy = MyFedAVG(
+    strategy = MyFedProx(
         fraction_fit=1.,
         fraction_evaluate=1.,
         min_fit_clients=nClients,
