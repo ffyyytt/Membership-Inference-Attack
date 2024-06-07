@@ -8,15 +8,15 @@ from sklearn.metrics import mean_squared_error
 from typing import *
 from model.unit import *
 
-def FLget_parameters(net) -> List[np.ndarray]:
-    return [val.cpu().numpy() for _, val in net.state_dict().items()]
+def FLFget_parameters(net) -> List[np.ndarray]:
+    return [val.cpu().numpy() for _, val in list(net.state_dict().items())[-1:]]
 
-def FLset_parameters(net, parameters: List[np.ndarray]):
-    params_dict = zip(net.state_dict().keys(), parameters)
+def FLFset_parameters(net, parameters: List[np.ndarray]):
+    params_dict = zip(list(net.state_dict().keys())[-1:], parameters)
     state_dict = OrderedDict({k: torch.Tensor(v) for k, v in params_dict if len(v.shape)>0})
     net.load_state_dict(state_dict, strict=True)
 
-class FlowerClient(fl.client.NumPyClient):
+class FLFClient(fl.client.NumPyClient):
     def __init__(self, cid, net, device, trainloader, valloader, localEpochs):
         self.cid = cid
         self.net = net
@@ -26,15 +26,15 @@ class FlowerClient(fl.client.NumPyClient):
         self.localEpochs = localEpochs
 
     def get_parameters(self, config):
-        return FLget_parameters(self.net)
+        return FLFget_parameters(self.net)
 
     def fit(self, parameters, config):
-        FLset_parameters(self.net, parameters)
+        FLFset_parameters(self.net, parameters)
         self.__FLtrainModelWithModel(self.net, self.trainloader, self.device , epochs=self.localEpochs)
-        return FLget_parameters(self.net), len(self.trainloader), {}
+        return FLFget_parameters(self.net), len(self.trainloader), {}
 
     def evaluate(self, parameters, config):
-        FLset_parameters(self.net, parameters)
+        FLFset_parameters(self.net, parameters)
         output, label = self.__FLmodelPredict(self.net, self.valloader, self.device)
         loss = mean_squared_error(label, output)
         accuracy = np.mean(np.argmax(output, axis=1)==np.argmax(label, axis=1))
@@ -47,13 +47,7 @@ class FlowerClient(fl.client.NumPyClient):
         scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
         loss_fn=torch.nn.CrossEntropyLoss().to(device)
 
-        train_unit = MyTrainUnit(module=model, 
-                                 optimizer=optimizer, 
-                                 lr_scheduler=scheduler, 
-                                 loss_fn=loss_fn, 
-                                 totalSteps=len(dataLoader), 
-                                 verbose=0, 
-                                 totalEpochs=self.localEpochs)
+        train_unit = MyTrainUnit(module=model, optimizer=optimizer, lr_scheduler=scheduler, loss_fn=loss_fn, totalSteps=len(dataLoader), verbose=2, totalEpochs=self.localEpochs)
         torchtnt.framework.train(train_unit, dataLoader, max_epochs=epochs)
         return model
 

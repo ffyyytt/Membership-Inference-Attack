@@ -4,6 +4,7 @@ import flwr as fl
 from model.FLStrategies import *
 from model.unit import *
 from model.FLClient import *
+from model.FLFeatureClient import *
 from model.ModelFromBackbone import *
 
 def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2", epochs = 50, verbose=2):
@@ -52,7 +53,7 @@ def computeMIAScore(yPred, shadowPreds):
 
 def FLSetup(n_classes, device, backbone = "mobilenet_v2", nClients=10):
     params = FLget_parameters(ModelFromBackbone(backbone, n_classes))
-    strategy = MyFedProx(
+    strategy = MyFedAVG(
         fraction_fit=1.,
         fraction_evaluate=1.,
         min_fit_clients=nClients,

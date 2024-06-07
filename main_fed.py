@@ -3,8 +3,8 @@ import dataAID
 from utils import *
 
 nClients = 10
-localEpochs = 10
-rounds = 10
+localEpochs = 1
+rounds = 1
 backbone = "resnet18"
 n_classes = dataAID.__AID_N_CLASSES__
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -12,7 +12,7 @@ trainLoaders = dataAID.loadClientsTrainAID(device, nClients)
 validLoaders = dataAID.loadClientsTrainAID(device, nClients)
 miaDataLoader = dataAID.loadMIADataAID(device)
 
-def client_fn(cid) -> FlowerClient:
+def client_fn(cid):
     net = ModelFromBackbone(backbone, n_classes)
     trainLoader = trainLoaders[int(cid)]
     validLoader = validLoaders[int(cid)]
@@ -36,7 +36,7 @@ yPred = FLModelPredict(strategy.parameters_aggregated, n_classes, backbone, miaD
 
 shadowPreds = []
 shadowModels = []
-for i in range(128):
+for i in range(32):
     strategy = FLSetup(n_classes, device, backbone, nClients)
 
     fl.simulation.start_simulation(
