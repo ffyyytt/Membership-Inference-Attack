@@ -53,7 +53,7 @@ def computeMIAScore(yPred, shadowPreds):
 
 def FLSetup(n_classes, device, backbone = "mobilenet_v2", nClients=10):
     params = FLget_parameters(ModelFromBackbone(backbone, n_classes))
-    strategy = MyFedAVG(
+    strategy = MyFedProx(
         fraction_fit=1.,
         fraction_evaluate=1.,
         min_fit_clients=nClients,
