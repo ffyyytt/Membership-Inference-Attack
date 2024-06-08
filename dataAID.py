@@ -125,5 +125,5 @@ def loadMIADataAID(device):
         if i in __AID_MEMBER_SET__+__AID_NON_MEM_SET__:
             imagePaths += X[test_index].tolist()
             labels += Y[test_index].tolist()
-            memberLabels += [int(i==__AID_MEMBER_SET__)]*len(test_index)
+            memberLabels += [int(i in __AID_MEMBER_SET__)]*len(test_index)
     return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=False), memberLabels
