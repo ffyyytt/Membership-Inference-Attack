@@ -53,3 +53,5 @@ for i in range(32):
 
 scores = computeMIAScore(yPred, shadowPreds)
 print(f"\n\nAttack: {roc_auc_score(memberLabels, scores)}\n\n")
+for thr in [0.001, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5]:
+    print(f"\n\TPR at {thr} FPR: {TPRatFPR(memberLabels, scores, thr)}\n\n")

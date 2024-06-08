@@ -2,6 +2,8 @@ import os
 import scipy
 import flwr as fl
 
+from sklearn.metrics import roc_curve
+
 from model.FLStrategies import *
 from model.unit import *
 from model.FLClient import *
@@ -55,6 +57,13 @@ def computeMIAScore(yPred, shadowPreds):
     trueShadowPred = np.array([np.max(shadowPreds[i][0]*shadowPreds[i][1], axis=1) for i in range(len(shadowPreds))])
     scores = minMaxScale([1-probabilityNormalDistribution(trueShadowPred[:, i], trueYPred[i]) for i in range(len(trueYPred))])
     return scores
+
+def TPRatFPR(y_true, y_score, target_fpr = 0.01):
+    fpr, tpr, thresholds = roc_curve(y_true, y_score)
+    tpr_at_target_fpr = tpr[np.where(fpr >= target_fpr)[0][0]]
+
+    return tpr_at_target_fpr
+
 
 def FLSetup(n_classes, device, backbone = "mobilenet_v2", nClients=10):
     params = FLget_parameters(ModelFromBackbone(backbone, n_classes))
