@@ -1,10 +1,11 @@
 import torch
 import dataAID
 from utils import *
+from sklearn.metrics import roc_auc_score
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 cenTrainDataLoader = dataAID.loadCenTrainAID(device)
-miaDataLoader = dataAID.loadMIADataAID(device)
+miaDataLoader, memberLabels = dataAID.loadMIADataAID(device)
 
 cenModel = trainModel(cenTrainDataLoader, device, dataAID.__AID_N_CLASSES__)
 yPred = modelPredict(cenModel, miaDataLoader, device)
@@ -17,4 +18,4 @@ for i in trange(32):
     shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device))
 
 scores = computeMIAScore(yPred, shadowPreds)
-print(np.mean((scores > 0.5) == np.array([0]*(len(scores)//2)+[1]*(len(scores)//2))))
+print(f"\n\nAttack: {roc_auc_score(memberLabels, scores)}\n\n")

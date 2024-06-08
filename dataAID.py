@@ -118,11 +118,12 @@ def loadCenShadowTrainAID(idx, device):
     return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=False)
 
 def loadMIADataAID(device):
-    imagePaths, labels = [], []
+    imagePaths, labels, memberLabels = [], []
     X, Y = _loadAID()
     skf = StratifiedKFold(n_splits=8, shuffle=True, random_state=__RANDOM__SEED__)
     for i, (train_index, test_index) in enumerate(skf.split(X, np.argmax(Y, axis=1))):
         if i in __AID_MEMBER_SET__+__AID_NON_MEM_SET__:
             imagePaths += X[test_index].tolist()
             labels += Y[test_index].tolist()
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=False)
+            memberLabels += [int(i==__AID_MEMBER_SET__)]*len(test_index)
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=False), memberLabels
