@@ -67,7 +67,7 @@ def TPRatFPR(y_true, y_score, target_fpr = 0.01):
 
 def FLSetup(n_classes, device, backbone = "mobilenet_v2", nClients=10):
     params = FLget_parameters(ModelFromBackbone(backbone, n_classes))
-    strategy = MyFedProx(
+    strategy = MyFedAVG(
         fraction_fit=1.,
         fraction_evaluate=1.,
         min_fit_clients=nClients,
