@@ -18,5 +18,6 @@ for i in trange(32):
     shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device))
 
 scores = computeMIAScore(yPred, shadowPreds)
+print(f"\n\nAttack: {roc_auc_score(memberLabels, scores)}\n\n")
 for thr in [0.001, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5]:
-    print(f"\n\TPR at {thr} FPR: {TPRatFPR(memberLabels, scores, thr)}\n\n")
+    print(f"\n\nTPR at {thr} FPR: {TPRatFPR(memberLabels, scores, thr)}\n\n")
