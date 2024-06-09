@@ -3,11 +3,12 @@ import dataAID
 from utils import *
 from sklearn.metrics import roc_auc_score
 
+backbone = "resnet18"
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 cenTrainDataLoader = dataAID.loadCenTrainAID(device)
 miaDataLoader, memberLabels = dataAID.loadMIADataAID(device)
 
-cenModel = trainModel(cenTrainDataLoader, device, dataAID.__AID_N_CLASSES__)
+cenModel = trainModel(cenTrainDataLoader, device, dataAID.__AID_N_CLASSES__, backbone)
 yPred = modelPredict(cenModel, miaDataLoader, device)
 
 shadowPreds = []

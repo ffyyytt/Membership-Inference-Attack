@@ -16,6 +16,10 @@ miaDataLoader, memberLabels = dataAID.loadMIADataAID(device)
 
 def client_fn(cid):
     net = ModelFromBackbone(backbone, n_classes)
+    if os.path.isfile(backbone+".weight"):
+        net.load_state_dict(torch.load(backbone+".weight"))
+    else:
+        torch.save(net.state_dict(), backbone+".weight")
     trainLoader = trainLoaders[int(cid)]
     validLoader = validLoaders[int(cid)]
     return FlowerClient(cid, net, device, trainLoader, validLoader, localEpochs).to_client()
