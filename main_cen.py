@@ -8,7 +8,7 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 cenTrainDataLoader = dataCIFARonline.loadCenTrainCIFAR10(device)
 miaDataLoader, memberLabels, inOutLabels = dataCIFARonline.loadMIADataCIFAR10(device)
 
-cenModel = trainModel(cenTrainDataLoader, device, dataCIFARonline.__CIFAR_N_CLASSES__, backbone)
+cenModel = trainModel(cenTrainDataLoader, device, dataCIFARonline.__CIFAR10_N_CLASSES__, backbone)
 yPred = modelPredict(cenModel, miaDataLoader, device)
 
 shadowPreds = []
