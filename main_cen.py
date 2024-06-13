@@ -13,7 +13,7 @@ yPred = modelPredict(cenModel, miaDataLoader, device)
 
 shadowPreds = []
 shadowModels = []
-for i in trange(32):
+for i in trange(dataCIFARonline.__CIFAR10_N_SHADOW__):
     shadowDataLoader = dataCIFARonline.loadCenShadowTrainCIFAR10(i, device)
     shadowModels.append(trainModel(shadowDataLoader, device, dataCIFARonline.__CIFAR10_N_CLASSES__, verbose=0))
     shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device))
