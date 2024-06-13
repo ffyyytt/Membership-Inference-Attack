@@ -1,21 +1,21 @@
 import torch
-import dataAID
+import dataCIFARonline
 from utils import *
 from sklearn.metrics import roc_auc_score
 
 backbone = "resnet18"
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-cenTrainDataLoader = dataAID.loadCenTrainAID(device)
-miaDataLoader, memberLabels = dataAID.loadMIADataAID(device)
+cenTrainDataLoader = dataCIFARonline.loadCenTrainCIFAR10(device)
+miaDataLoader, memberLabels, inOutLabels = dataCIFARonline.loadMIADataCIFAR10(device)
 
-cenModel = trainModel(cenTrainDataLoader, device, dataAID.__AID_N_CLASSES__, backbone)
+cenModel = trainModel(cenTrainDataLoader, device, dataCIFARonline.__CIFAR_N_CLASSES__, backbone)
 yPred = modelPredict(cenModel, miaDataLoader, device)
 
 shadowPreds = []
 shadowModels = []
 for i in trange(32):
-    shadowDataLoader = dataAID.loadCenShadowTrainAID(i, device)
-    shadowModels.append(trainModel(shadowDataLoader, device, dataAID.__AID_N_CLASSES__, verbose=0))
+    shadowDataLoader = dataCIFARonline.loadCenShadowTrainCIFAR10(i, device)
+    shadowModels.append(trainModel(shadowDataLoader, device, dataCIFARonline.__CIFAR10_N_CLASSES__, verbose=0))
     shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device))
 
 scores = computeMIAScore(yPred, shadowPreds)

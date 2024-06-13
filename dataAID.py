@@ -19,10 +19,11 @@ __RANDOM__SEED__ = 1312
 
 __AID_N_CLASSES__ = 30
 __AID_N_SPLIT__ = 8
+__AID_N_SHADOW__ = 32
 __AID_TRAIN_SET__ = [0, 1]
 __AID_MEMBER_SET__ = [0]
 __AID_NON_MEM_SET__ = [2]
-__AID_SHADOW__SET = [3, 4, 5, 6, 7]
+__AID_SHADOW_SET__ = [3, 4, 5, 6, 7]
 __AID_BATCH_SIZE__ = 64
 __AID_TRANSFORMS__ = torchvision.transforms.v2.Compose([
     torchvision.transforms.v2.RandomResizedCrop(size=(224, 224), antialias=True),
@@ -54,7 +55,7 @@ def _loadAID():
 def loadCenTrainAID(device):
     imagePaths, labels = [], []
     X, Y = _loadAID()
-    skf = StratifiedKFold(n_splits=8, shuffle=True, random_state=__RANDOM__SEED__)
+    skf = StratifiedKFold(n_splits=__AID_N_SPLIT__, shuffle=True, random_state=__RANDOM__SEED__)
     for i, (train_index, test_index) in enumerate(skf.split(X, np.argmax(Y, axis=1))):
         if i in __AID_TRAIN_SET__:
             imagePaths += X[test_index].tolist()
@@ -64,7 +65,7 @@ def loadCenTrainAID(device):
 def loadClientsTrainAID(device, nClients):
     imagePaths, labels = [], []
     X, Y = _loadAID()
-    skf = StratifiedKFold(n_splits=8, shuffle=True, random_state=__RANDOM__SEED__)
+    skf = StratifiedKFold(n_splits=__AID_N_SPLIT__, shuffle=True, random_state=__RANDOM__SEED__)
     for i, (train_index, test_index) in enumerate(skf.split(X, np.argmax(Y, axis=1))):
         if i in __AID_TRAIN_SET__:
             imagePaths += X[test_index].tolist()
@@ -82,9 +83,9 @@ def loadClientsTrainAID(device, nClients):
 def loadCenShadowAID():
     imagePaths, labels = [], []
     X, Y = _loadAID()
-    skf = StratifiedKFold(n_splits=8, shuffle=True, random_state=__RANDOM__SEED__)
+    skf = StratifiedKFold(n_splits=__AID_N_SPLIT__, shuffle=True, random_state=__RANDOM__SEED__)
     for i, (train_index, test_index) in enumerate(skf.split(X, np.argmax(Y, axis=1))):
-        if i in __AID_SHADOW__SET:
+        if i in __AID_SHADOW_SET__:
             imagePaths += X[test_index].tolist()
             labels += Y[test_index].tolist()
     return np.array(imagePaths), np.array(labels)
@@ -92,7 +93,7 @@ def loadCenShadowAID():
 def loadClientsShadowTrainAID(idx, device, nClients):
     imagePaths, labels = [], []
     X, Y = loadCenShadowAID()
-    sss = StratifiedShuffleSplit(n_splits=128, test_size=len(__AID_TRAIN_SET__)/len(__AID_SHADOW__SET), random_state=__RANDOM__SEED__)
+    sss = StratifiedShuffleSplit(n_splits=128, test_size=len(__AID_TRAIN_SET__)/len(__AID_SHADOW_SET__), random_state=__RANDOM__SEED__)
     for i, (train_index, test_index) in enumerate(sss.split(X, np.argmax(Y, axis=1))):
         if i == idx:
             imagePaths += X[test_index].tolist()
@@ -110,7 +111,7 @@ def loadClientsShadowTrainAID(idx, device, nClients):
 def loadCenShadowTrainAID(idx, device):
     imagePaths, labels = [], []
     X, Y = loadCenShadowAID()
-    sss = StratifiedShuffleSplit(n_splits=128, test_size=len(__AID_TRAIN_SET__)/len(__AID_SHADOW__SET), random_state=__RANDOM__SEED__)
+    sss = StratifiedShuffleSplit(n_splits=__AID_N_SHADOW__, test_size=len(__AID_TRAIN_SET__)/len(__AID_SHADOW_SET__), random_state=__RANDOM__SEED__)
     for i, (train_index, test_index) in enumerate(sss.split(X, np.argmax(Y, axis=1))):
         if i == idx:
             imagePaths += X[test_index].tolist()
@@ -120,10 +121,11 @@ def loadCenShadowTrainAID(idx, device):
 def loadMIADataAID(device):
     imagePaths, labels, memberLabels = [], [], []
     X, Y = _loadAID()
-    skf = StratifiedKFold(n_splits=8, shuffle=True, random_state=__RANDOM__SEED__)
+    inOutLabels = np.zeros([len(X), __AID_N_SHADOW__])
+    skf = StratifiedKFold(n_splits=__AID_N_SPLIT__, shuffle=True, random_state=__RANDOM__SEED__)
     for i, (train_index, test_index) in enumerate(skf.split(X, np.argmax(Y, axis=1))):
         if i in __AID_MEMBER_SET__+__AID_NON_MEM_SET__:
             imagePaths += X[test_index].tolist()
             labels += Y[test_index].tolist()
             memberLabels += [int(i in __AID_MEMBER_SET__)]*len(test_index)
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=False), memberLabels
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__), batch_size=__AID_BATCH_SIZE__, shuffle=False), memberLabels, inOutLabels

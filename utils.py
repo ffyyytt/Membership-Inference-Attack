@@ -10,7 +10,7 @@ from model.FLClient import *
 from model.FLFeatureClient import *
 from model.ModelFromBackbone import *
 
-def trainModel(dataLoader, device, n_classes, backbone = "mobilenet_v2", epochs = 50, verbose=2):
+def trainModel(dataLoader, device, n_classes, backbone = "resnet18", epochs = 50, verbose=2):
     model = ModelFromBackbone(backbone, n_classes)
     if os.path.isfile(backbone+".weight"):
         model.load_state_dict(torch.load(backbone+".weight"))
@@ -48,14 +48,22 @@ def probabilityNormalDistribution(data, p, eps=1e-6):
     std = max(np.std(data), eps)
     return scipy.stats.norm.cdf((p - mean) / std)
 
+def LiRAcalculation(p, data, inOutLabel):
+    truthIdxs = np.index(inOutLabel==1)[0]
+    falseIdxs = np.index(inOutLabel==0)[0]
+    if len(truthIdxs) == 0:
+        return 1-probabilityNormalDistribution(data, p)
+    else:
+        return probabilityNormalDistribution(data[truthIdxs], p)/probabilityNormalDistribution(data[falseIdxs], p)
+
 def minMaxScale(data):
     data = np.array(data)
     return (data-min(data))/(max(data)-min(data))
 
-def computeMIAScore(yPred, shadowPreds):
+def computeMIAScore(yPred, shadowPreds, inOutLabels):
     trueYPred = np.max(yPred[0]*yPred[1], axis=1)
     trueShadowPred = np.array([np.max(shadowPreds[i][0]*shadowPreds[i][1], axis=1) for i in range(len(shadowPreds))])
-    scores = minMaxScale([1-probabilityNormalDistribution(trueShadowPred[:, i], trueYPred[i]) for i in range(len(trueYPred))])
+    scores = [LiRAcalculation(trueShadowPred[:, i], trueYPred[i], inOutLabels[i]) for i in range(len(trueYPred))]
     return scores
 
 def TPRatFPR(y_true, y_score, target_fpr = 0.01):
@@ -65,9 +73,9 @@ def TPRatFPR(y_true, y_score, target_fpr = 0.01):
     return tpr_at_target_fpr
 
 
-def FLSetup(n_classes, device, backbone = "mobilenet_v2", nClients=10):
+def FLSetup(n_classes, device, backbone = "resnet18", nClients=10):
     params = FLget_parameters(ModelFromBackbone(backbone, n_classes))
-    strategy = MyFedProx(
+    strategy = MyFedAVG(
         fraction_fit=1.,
         fraction_evaluate=1.,
         min_fit_clients=nClients,

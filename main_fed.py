@@ -12,7 +12,7 @@ n_classes = dataAID.__AID_N_CLASSES__
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 trainLoaders = dataAID.loadClientsTrainAID(device, nClients)
 validLoaders = dataAID.loadClientsTrainAID(device, nClients)
-miaDataLoader, memberLabels = dataAID.loadMIADataAID(device)
+miaDataLoader, memberLabels, inOutLabels = dataAID.loadMIADataAID(device)
 
 def client_fn(cid):
     net = ModelFromBackbone(backbone, n_classes)
