@@ -27,7 +27,7 @@ __CIFAR10_BATCH_SIZE__ = 128
 __CIFAR10_TRANSFORMS__ = torchvision.transforms.v2.Compose([
     # torchvision.transforms.v2.RandomResizedCrop(size=(224, 224), antialias=True),
     torchvision.transforms.v2.ToTensor(),
-    torchvision.transforms.v2.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+    torchvision.transforms.v2.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.247, 0.243, 0.261]),
 ])
 
 def _loadCIFAR10():
