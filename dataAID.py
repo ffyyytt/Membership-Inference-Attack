@@ -24,7 +24,7 @@ __AID_TRAIN_SET__ = [0, 1]
 __AID_MEMBER_SET__ = [0]
 __AID_NON_MEM_SET__ = [2]
 __AID_SHADOW_SET__ = [3, 4, 5, 6, 7]
-__AID_BATCH_SIZE__ = 2048
+__AID_BATCH_SIZE__ = 4096
 __AID_TRANSFORMS__ = torchvision.transforms.v2.Compose([
     torchvision.transforms.v2.RandomResizedCrop(size=(224, 224), antialias=True),
     torchvision.transforms.v2.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.247, 0.243, 0.261]),
