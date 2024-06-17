@@ -2,8 +2,9 @@ import torch
 import torchvision
 
 class ModelFromBackbone(torch.nn.Module):
-    def __init__(self, backbone, num_classes):
+    def __init__(self, backbone, num_classes, device):
         super().__init__()
+        self.device = device
         self.backbone = getattr(torchvision.models, backbone)(weights=None)
 
         if hasattr(self.backbone, 'fc'):
@@ -14,4 +15,5 @@ class ModelFromBackbone(torch.nn.Module):
             raise NotImplementedError(f"Backbone {backbone} is not supported yet.")
 
     def forward(self, x):
+        x.to(self.device)
         return self.backbone(x)

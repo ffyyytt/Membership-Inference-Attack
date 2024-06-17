@@ -11,7 +11,7 @@ from model.FLFeatureClient import *
 from model.ModelFromBackbone import *
 
 def trainModel(dataLoader, device, n_classes, backbone = "resnet18", epochs = 50, verbose=2):
-    model = ModelFromBackbone(backbone, n_classes)
+    model = ModelFromBackbone(backbone, n_classes, device)
     if os.path.isfile(backbone+".weight"):
         model.load_state_dict(torch.load(backbone+".weight"))
     else:
@@ -30,7 +30,7 @@ def trainModelWithModel(dataLoader, device, model, epochs, verbose=2):
     return model
 
 def FLModelPredict(parameters, n_classes, backbone, dataLoader, device):
-    model = ModelFromBackbone(backbone, n_classes)
+    model = ModelFromBackbone(backbone, n_classes, device)
     FLset_parameters(model, parameters_to_ndarrays(parameters))
     model = model.to(device)
     predUnit = MyPredictUnit(module=model)
@@ -74,7 +74,7 @@ def TPRatFPR(y_true, y_score, target_fpr = 0.01):
 
 
 def FLSetup(n_classes, device, backbone = "resnet18", nClients=10):
-    params = FLget_parameters(ModelFromBackbone(backbone, n_classes))
+    params = FLget_parameters(ModelFromBackbone(backbone, n_classes, device))
     strategy = MyFedAVG(
         fraction_fit=1.,
         fraction_evaluate=1.,

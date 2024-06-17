@@ -15,7 +15,7 @@ validLoaders = dataAID.loadClientsTrainAID(device, nClients)
 miaDataLoader, memberLabels, inOutLabels = dataAID.loadMIADataAID(device)
 
 def client_fn(cid):
-    net = ModelFromBackbone(backbone, n_classes)
+    net = ModelFromBackbone(backbone, n_classes, device)
     if os.path.isfile(backbone+".weight"):
         net.load_state_dict(torch.load(backbone+".weight"))
     else:
