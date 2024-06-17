@@ -10,7 +10,7 @@ from model.FLClient import *
 from model.FLFeatureClient import *
 from model.ModelFromBackbone import *
 
-def trainModel(dataLoader, device, n_classes, backbone = "resnet18", epochs = 20, verbose=2):
+def trainModel(dataLoader, device, n_classes, backbone = "resnet18", epochs = 100, verbose=2):
     model = ModelFromBackbone(backbone, n_classes, device)
     if os.path.isfile(backbone+".weight"):
         model.load_state_dict(torch.load(backbone+".weight"))
