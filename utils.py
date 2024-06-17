@@ -21,7 +21,7 @@ def trainModel(dataLoader, device, n_classes, backbone = "resnet18", epochs = 20
 
 def trainModelWithModel(dataLoader, device, model, epochs, verbose=2):
     model = model.to(device)
-    optimizer = torch.optim.SGD(model.parameters(), lr=1e-7, momentum=0.9, weight_decay=1e-3)
+    optimizer = torch.optim.SGD(model.parameters(), lr=1e-1, momentum=0.9, weight_decay=1e-3)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
     loss_fn=torch.nn.CrossEntropyLoss().to(device)
 
