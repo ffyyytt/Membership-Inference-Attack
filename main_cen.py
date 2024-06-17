@@ -11,7 +11,7 @@ miaDataLoader, memberLabels, inOutLabels = dataCIFARonline.loadMIADataCIFAR10(de
 cenModel = trainModel(cenTrainDataLoader, device, dataCIFARonline.__CIFAR10_N_CLASSES__, backbone)
 yPred = modelPredict(cenModel, miaDataLoader, device)
 
-print(yPred.shape)
+print(yPred[0].shape)
 
 # shadowPreds = []
 # shadowModels = []
