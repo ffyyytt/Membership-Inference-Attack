@@ -15,6 +15,8 @@ print(yPred[0].shape, yPred[1].shape)
 print(np.argmax(yPred[0], axis=1))
 print(np.argmax(yPred[1], axis=1))
 
+print(np.mean(np.argmax(yPred[0], axis=1) == np.argmax(yPred[1], axis=1)))
+
 # shadowPreds = []
 # shadowModels = []
 # for i in trange(dataCIFARonline.__CIFAR10_N_SHADOW__):
