@@ -37,6 +37,8 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         loss = self.loss_fn(outputs, targets)
         loss.backward()
 
+        print(loss)
+
         self.optimizer.step()
         self.optimizer.zero_grad()
 
