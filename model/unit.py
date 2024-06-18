@@ -16,7 +16,7 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         optimizer: torch.optim.Optimizer,
         lr_scheduler: torch.optim.lr_scheduler._LRScheduler,
         loss_fn: torch.nn, totalSteps = None,
-        verbose = 1, totalEpochs = 20
+        verbose = 1, totalEpochs = 20, device = "cpu",
     ):
         super().__init__()
         self.module = module
@@ -28,16 +28,17 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         self.totalEpochs = totalEpochs
         self.verbose = verbose
         self.tqdm = None
+        self.device = device
 
     def train_step(self, state: torchtnt.framework.state.State, data: Batch) -> None:
         if self.verbose == 1:
             self.tqdm.update(1)
         inputs, targets = data
+        inputs.to(self.device)
+        targets.to(self.device)
         outputs = self.module(inputs)
         loss = self.loss_fn(outputs, targets)
         loss.backward()
-
-        print(loss)
 
         self.optimizer.step()
         self.optimizer.zero_grad()
