@@ -59,7 +59,7 @@ def loadCenTrainCIFAR10(device):
         if i in __CIFAR10_TRAIN_SET__:
             imagePaths += X[test_index].tolist()
             labels += Y[test_index].tolist()
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __CIFAR10_TRANSFORMS__), batch_size=__CIFAR10_BATCH_SIZE__, shuffle=False)
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __CIFAR10_TRANSFORMS__), batch_size=__CIFAR10_BATCH_SIZE__, shuffle=True)
 
 def loadCenShadowTrainCIFAR10(idx, device):
     imagePaths, labels = [], []
@@ -69,7 +69,7 @@ def loadCenShadowTrainCIFAR10(idx, device):
         if i == idx:
             imagePaths += X[test_index].tolist()
             labels += Y[test_index].tolist()
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __CIFAR10_TRANSFORMS__), batch_size=__CIFAR10_BATCH_SIZE__, shuffle=False)
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __CIFAR10_TRANSFORMS__), batch_size=__CIFAR10_BATCH_SIZE__, shuffle=True)
 
 def loadMIADataCIFAR10(device):
     imagePaths, labels, memberLabels = [], [], []
@@ -85,4 +85,4 @@ def loadMIADataCIFAR10(device):
     sss = StratifiedShuffleSplit(n_splits=__CIFAR10_N_SHADOW__, test_size=len(__CIFAR10_TRAIN_SET__)/__CIFAR10_N_SPLIT__, random_state=__RANDOM__SEED__)
     for i, (train_index, test_index) in enumerate(sss.split(X, np.argmax(Y, axis=1))):
         inOutLabels[test_index, i] = 1
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __CIFAR10_TRANSFORMS__), batch_size=__CIFAR10_BATCH_SIZE__, shuffle=False), memberLabels, inOutLabels
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __CIFAR10_TRANSFORMS__), batch_size=__CIFAR10_BATCH_SIZE__, shuffle=True), memberLabels, inOutLabels
