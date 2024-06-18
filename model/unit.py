@@ -34,8 +34,8 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
         if self.verbose == 1:
             self.tqdm.update(1)
         inputs, targets = data
-        inputs.to(self.device)
-        targets.to(self.device)
+        inputs = inputs.to(self.device)
+        targets = targets.to(self.device)
         outputs = self.module(inputs)
         loss = self.loss_fn(outputs, targets)
         loss.backward()
