@@ -53,7 +53,7 @@ class FlowerClient(fl.client.NumPyClient):
                                  loss_fn=loss_fn, 
                                  totalSteps=len(dataLoader), 
                                  verbose=0, 
-                                 totalEpochs=self.localEpochs
+                                 totalEpochs=self.localEpochs,
                                  device=device)
         torchtnt.framework.train(train_unit, dataLoader, max_epochs=epochs)
         return model
