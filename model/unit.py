@@ -33,12 +33,10 @@ class MyTrainUnit(torchtnt.framework.unit.TrainUnit[Batch]):
     def train_step(self, state: torchtnt.framework.state.State, data: Batch) -> None:
         if self.verbose == 1:
             self.tqdm.update(1)
-        print("HERE")
         inputs, targets = data
         inputs = inputs.to(self.device)
         targets = targets.to(self.device)
         outputs = self.module(inputs)
-        print("REALLY")
         loss = self.loss_fn(outputs, targets)
         loss.backward()
 
