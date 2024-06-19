@@ -37,9 +37,9 @@ def FLModelPredict(parameters, n_classes, backbone, dataLoader, device):
     torchtnt.framework.predict(predUnit, dataLoader)
     return predUnit.outputs, predUnit.labels
 
-def modelPredict(model, dataLoader, device):
+def modelPredict(model, dataLoader, device, verbose=True):
     model = model.to(device)
-    predUnit = MyPredictUnit(module=model)
+    predUnit = MyPredictUnit(module=model, verbose=verbose)
     torchtnt.framework.predict(predUnit, dataLoader)
     return predUnit.outputs, predUnit.labels
 

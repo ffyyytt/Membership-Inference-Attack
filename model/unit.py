@@ -64,18 +64,22 @@ class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
         self,
         module: torch.nn.Module,
         totalSteps = None,
+        verbose = True
     ):
         super().__init__()
         self.module = module
         self.outputs = np.array([])
         self.labels = np.array([])
         self.totalSteps = totalSteps
+        self.verbose = verbose
 
     def on_predict_epoch_start(self, state: torchtnt.framework.state.State) -> None:
-        self.tqdm = tqdm(total=self.totalSteps)
+        if self.verbose:
+            self.tqdm = tqdm(total=self.totalSteps)
 
     def predict_step(self, state: torchtnt.framework.state.State, data: Batch) -> torch.tensor:
-        self.tqdm.update(1)
+        if self.verbose:
+            self.tqdm.update(1)
         inputs, targets = data
         outputs = self.module(inputs)
         if len(self.outputs) == 0:
@@ -87,4 +91,5 @@ class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
         return outputs
     
     def on_predict_epoch_end(self, state: torchtnt.framework.state.State) -> None:
-        self.tqdm.close()
+        if self.verbose:
+            self.tqdm.close()
