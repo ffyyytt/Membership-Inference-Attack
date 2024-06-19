@@ -63,6 +63,8 @@ def minMaxScale(data):
 def computeMIAScore(yPred, shadowPreds, inOutLabels):
     trueYPred = np.max(yPred[0]*yPred[1], axis=1)
     trueShadowPred = np.array([np.max(shadowPreds[i][0]*shadowPreds[i][1], axis=1) for i in range(len(shadowPreds))])
+    print(trueYPred)
+    print(trueShadowPred)
     scores = [LiRAcalculation(trueShadowPred[:, i], trueYPred[i], inOutLabels[i]) for i in range(len(trueYPred))]
     return scores
 

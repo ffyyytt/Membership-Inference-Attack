@@ -40,6 +40,7 @@ for i in trange(dataCIFARonline.__CIFAR10_N_SHADOW__):
     # print(f"\n\nAttack: {roc_auc_score(memberLabels, scores)}\n\n")
     # print(f"\n\nTPR at {0.001} FPR: {TPRatFPR(memberLabels, scores, 0.001)}\n\n")
 
+print(inOutLabels)
 scores = computeMIAScore(yPred, shadowPreds, inOutLabels)
 print(f"\n\nAttack: {roc_auc_score(memberLabels, scores)}\n\n")
 for thr in [0.001, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5]:
