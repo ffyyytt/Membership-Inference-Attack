@@ -36,7 +36,7 @@ for i in trange(dataCIFARonline.__CIFAR10_N_SHADOW__):
     shadowDataLoader = dataCIFARonline.loadCenShadowTrainCIFAR10(i, device)
     shadowModels.append(trainModel(shadowDataLoader, device, dataCIFARonline.__CIFAR10_N_CLASSES__, verbose=0))
     shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device, verbose=False))
-    scores = computeMIAScore(yPred, shadowPreds, inOutLabels)
+    # scores = computeMIAScore(yPred, shadowPreds, inOutLabels)
     # print(f"\n\nAttack: {roc_auc_score(memberLabels, scores)}\n\n")
     # print(f"\n\nTPR at {0.001} FPR: {TPRatFPR(memberLabels, scores, 0.001)}\n\n")
 
