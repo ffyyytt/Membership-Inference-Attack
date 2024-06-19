@@ -23,11 +23,11 @@ __CIFAR10_N_SHADOW__ = 256
 __CIFAR10_TRAIN_SET__ = [0]
 __CIFAR10_MEMBER_SET__ = [0]
 __CIFAR10_NON_MEM_SET__ = [1]
-__CIFAR10_BATCH_SIZE__ = 4096
+__CIFAR10_BATCH_SIZE__ = 32
 __CIFAR10_TRANSFORMS__ = torchvision.transforms.v2.Compose([
     # torchvision.transforms.v2.RandomResizedCrop(size=(224, 224), antialias=True),
     torchvision.transforms.v2.ToTensor(),
-    torchvision.transforms.v2.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.247, 0.243, 0.261]),
+    torchvision.transforms.v2.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.2010]),
 ])
 
 def _loadCIFAR10():
