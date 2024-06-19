@@ -49,8 +49,8 @@ def probabilityNormalDistribution(data, p, eps=1e-6):
     return scipy.stats.norm.cdf((p - mean) / std)
 
 def LiRAcalculation(p, data, inOutLabel):
-    truthIdxs = np.index(inOutLabel==1)[0]
-    falseIdxs = np.index(inOutLabel==0)[0]
+    truthIdxs = np.where(inOutLabel==1)[0]
+    falseIdxs = np.where(inOutLabel==0)[0]
     if len(truthIdxs) == 0:
         return 1-probabilityNormalDistribution(data, p)
     else:
