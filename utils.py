@@ -10,7 +10,7 @@ from model.FLClient import *
 from model.FLFeatureClient import *
 from model.ModelFromBackbone import *
 
-def trainModel(dataLoader, device, n_classes, backbone = "resnet18", epochs = 10, verbose=2):
+def trainModel(dataLoader, device, n_classes, backbone = "resnet18", epochs = 1, verbose=2):
     model = ModelFromBackbone(backbone, n_classes, device)
     if os.path.isfile(backbone+".weight"):
         model.load_state_dict(torch.load(backbone+".weight"))
@@ -46,6 +46,7 @@ def modelPredict(model, dataLoader, device, verbose=True):
 def probabilityNormalDistribution(data, p, eps=1e-6):
     mean = np.mean(data)
     std = max(np.std(data), eps)
+    print(scipy.stats.norm.cdf((p - mean) / std))
     return scipy.stats.norm.cdf((p - mean) / std)
 
 def LiRAcalculation(p, data, inOutLabel):
