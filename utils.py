@@ -46,16 +46,15 @@ def modelPredict(model, dataLoader, device, verbose=True):
 def probabilityNormalDistribution(data, p, eps=1e-6):
     mean = np.mean(data)
     std = max(np.std(data), eps)
-    print(scipy.stats.norm.cdf((p - mean) / std))
     return scipy.stats.norm.cdf((p - mean) / std)
 
-def LiRAcalculation(p, data, inOutLabel):
+def LiRAcalculation(p, data, inOutLabel, eps=1e-6):
     truthIdxs = np.where(inOutLabel[:len(data)]==1)[0]
     falseIdxs = np.where(inOutLabel[:len(data)]==0)[0]
     if len(truthIdxs) == 0:
         return 1-probabilityNormalDistribution(data, p)
     else:
-        return probabilityNormalDistribution(data[truthIdxs], p)/probabilityNormalDistribution(data[falseIdxs], p)
+        return probabilityNormalDistribution(data[truthIdxs], p)/max(probabilityNormalDistribution(data[falseIdxs], p), eps)
 
 def minMaxScale(data):
     data = np.array(data)
