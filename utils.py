@@ -43,12 +43,12 @@ def modelPredict(model, dataLoader, device, verbose=True):
     torchtnt.framework.predict(predUnit, dataLoader)
     return predUnit.outputs, predUnit.labels
 
-def probabilityNormalDistribution(data, p, eps=1e-6):
+def probabilityNormalDistribution(data, p, eps=1e-5):
     mean = np.mean(data)
     std = max(np.std(data), eps)
     return scipy.stats.norm.cdf((p - mean) / std)
 
-def LiRAcalculation(p, data, inOutLabel, eps=1e-6):
+def LiRAcalculation(p, data, inOutLabel, eps=1e-5):
     truthIdxs = np.where(inOutLabel[:len(data)]==1)[0]
     falseIdxs = np.where(inOutLabel[:len(data)]==0)[0]
     if len(truthIdxs) == 0:
