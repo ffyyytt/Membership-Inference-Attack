@@ -1,3 +1,4 @@
+import gc
 import torch
 import dataCIFARonline
 from utils import *
@@ -40,6 +41,7 @@ for i in trange(dataCIFARonline.__CIFAR10_N_SHADOW__):
         scores = computeMIAScore(yPred, shadowPreds, inOutLabels)
         print(f"\n\nAttack: {roc_auc_score(memberLabels, scores)}\n\n")
         print(f"\n\nTPR at {0.001} FPR: {TPRatFPR(memberLabels, scores, 0.001)}\n\n")
+    gc.collect()
 
 print(inOutLabels)
 scores = computeMIAScore(yPred, shadowPreds, inOutLabels)

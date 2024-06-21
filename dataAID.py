@@ -60,7 +60,7 @@ def loadCenTrainAID(device):
         if i in __AID_TRAIN_SET__:
             imagePaths += X[test_index].tolist()
             labels += Y[test_index].tolist()
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__, None, True), batch_size=__AID_BATCH_SIZE__, shuffle=False)
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__, None, False), batch_size=__AID_BATCH_SIZE__, shuffle=False)
 
 def loadClientsTrainAID(device, nClients):
     imagePaths, labels = [], []
@@ -105,7 +105,7 @@ def loadClientsShadowTrainAID(idx, device, nClients):
     trainloaders = []
     skf = StratifiedKFold(n_splits=nClients, shuffle=True, random_state=__RANDOM__SEED__)
     for i, (train_index, test_index) in enumerate(skf.split(imagePaths, np.argmax(labels, axis=1))):
-        trainloaders.append(torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths[test_index].tolist(), labels[test_index].tolist(), device, __AID_TRANSFORMS__, None, True), batch_size=__AID_BATCH_SIZE__, shuffle=False))
+        trainloaders.append(torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths[test_index].tolist(), labels[test_index].tolist(), device, __AID_TRANSFORMS__, None, False), batch_size=__AID_BATCH_SIZE__, shuffle=False))
     return trainloaders
 
 def loadCenShadowTrainAID(idx, device):
@@ -128,4 +128,4 @@ def loadMIADataAID(device):
             imagePaths += X[test_index].tolist()
             labels += Y[test_index].tolist()
             memberLabels += [int(i in __AID_MEMBER_SET__)]*len(test_index)
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__, None, True), batch_size=__AID_BATCH_SIZE__, shuffle=False, num_workers=8), memberLabels, inOutLabels
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __AID_TRANSFORMS__, None, False), batch_size=__AID_BATCH_SIZE__, shuffle=False, num_workers=8), memberLabels, inOutLabels
