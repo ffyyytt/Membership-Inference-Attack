@@ -39,8 +39,8 @@ for i in trange(dataCIFARonline.__CIFAR10_N_SHADOW__):
     shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device, verbose=False))
     if (i > 10):
         scores = computeMIAScore(yPred, shadowPreds, inOutLabels)
-        print(f"\n\nAttack: {roc_auc_score(memberLabels, scores)}\n\n")
-        print(f"\n\nTPR at {0.001} FPR: {TPRatFPR(memberLabels, scores, 0.001)}\n\n")
+        print(f"Attack: {roc_auc_score(memberLabels, scores)}")
+        print(f"TPR at {0.001} FPR: {TPRatFPR(memberLabels, scores, 0.001)}")
     gc.collect()
 
 print(inOutLabels)
