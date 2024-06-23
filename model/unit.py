@@ -88,7 +88,7 @@ class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
         else:
             self.outputs = np.append(self.outputs, outputs.detach().cpu().numpy(), axis=0)
             self.labels = np.append(self.labels, targets.detach().cpu().numpy(), axis=0)
-        return outputs
+        return torch.nn.functional.softmax(torch.FloatTensor(outputs), dim=-1)
     
     def on_predict_epoch_end(self, state: torchtnt.framework.state.State) -> None:
         if self.verbose:
