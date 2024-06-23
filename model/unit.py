@@ -81,14 +81,15 @@ class MyPredictUnit(torchtnt.framework.unit.PredictUnit[Batch]):
         if self.verbose:
             self.tqdm.update(1)
         inputs, targets = data
-        outputs = self.module(inputs)
+        _outputs = self.module(inputs)
+        outputs = torch.nn.functional.softmax(_outputs, dim=-1)
         if len(self.outputs) == 0:
             self.outputs = outputs.detach().cpu().numpy()
             self.labels = targets.detach().cpu().numpy()
         else:
             self.outputs = np.append(self.outputs, outputs.detach().cpu().numpy(), axis=0)
             self.labels = np.append(self.labels, targets.detach().cpu().numpy(), axis=0)
-        return torch.nn.functional.softmax(torch.FloatTensor(outputs), dim=-1)
+        return _outputs
     
     def on_predict_epoch_end(self, state: torchtnt.framework.state.State) -> None:
         if self.verbose:
