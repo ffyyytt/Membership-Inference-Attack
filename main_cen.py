@@ -5,7 +5,7 @@ from utils import *
 from sklearn.metrics import roc_auc_score
 import torchvision.transforms as transforms
 
-backbone = "wide_resnet50_2"
+backbone = "resnet18"
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 cenTrainDataLoader = dataCIFARonline.loadCenTrainCIFAR10(device)
 
