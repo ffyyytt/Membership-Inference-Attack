@@ -31,22 +31,22 @@ print(np.argmax(yPred[1], axis=1))
 
 print(np.mean(np.argmax(yPred[0], axis=1) == np.argmax(yPred[1], axis=1)))
 
-shadowPreds = []
-shadowModels = []
-for i in range(dataCIFARonline.__CIFAR10_N_SHADOW__):
-    shadowDataLoader = dataCIFARonline.loadCenShadowTrainCIFAR10(i, device)
-    shadowModels.append(trainModel(shadowDataLoader, device, dataCIFARonline.__CIFAR10_N_CLASSES__, verbose=0))
-    shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device, verbose=False))
-    gc.collect()
-    torch.cuda.empty_cache()
-    if (i > 10):
-        scores = computeMIAScore(yPred, shadowPreds, inOutLabels)
-        print(f"Attack: {roc_auc_score(memberLabels, scores)}")
-        print(f"TPR at {0.001} FPR: {TPRatFPR(memberLabels, scores, 0.001)}")
+# shadowPreds = []
+# shadowModels = []
+# for i in range(dataCIFARonline.__CIFAR10_N_SHADOW__):
+#     shadowDataLoader = dataCIFARonline.loadCenShadowTrainCIFAR10(i, device)
+#     shadowModels.append(trainModel(shadowDataLoader, device, dataCIFARonline.__CIFAR10_N_CLASSES__, verbose=0))
+#     shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device, verbose=False))
+#     gc.collect()
+#     torch.cuda.empty_cache()
+#     if (i > 10):
+#         scores = computeMIAScore(yPred, shadowPreds, inOutLabels)
+#         print(f"Attack: {roc_auc_score(memberLabels, scores)}")
+#         print(f"TPR at {0.001} FPR: {TPRatFPR(memberLabels, scores, 0.001)}")
     
 
-print(inOutLabels)
-scores = computeMIAScore(yPred, shadowPreds, inOutLabels)
-print(f"Attack: {roc_auc_score(memberLabels, scores)}")
-for thr in [0.001, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5]:
-    print(f"TPR at {thr} FPR: {TPRatFPR(memberLabels, scores, thr)}")
+# print(inOutLabels)
+# scores = computeMIAScore(yPred, shadowPreds, inOutLabels)
+# print(f"Attack: {roc_auc_score(memberLabels, scores)}")
+# for thr in [0.001, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5]:
+#     print(f"TPR at {thr} FPR: {TPRatFPR(memberLabels, scores, thr)}")
