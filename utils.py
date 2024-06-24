@@ -16,6 +16,7 @@ def trainModel(dataLoader, device, n_classes, backbone = "resnet18", epochs = 20
         model.load_state_dict(torch.load(backbone+".weight"))
     else:
         torch.save(model.state_dict(), backbone+".weight")
+    model = torch.nn.DataParallel(model)
     trainModelWithModel(dataLoader, device, model, epochs, verbose)
     return model
 
