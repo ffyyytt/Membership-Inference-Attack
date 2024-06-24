@@ -33,7 +33,7 @@ print(np.mean(np.argmax(yPred[0], axis=1) == np.argmax(yPred[1], axis=1)))
 
 shadowPreds = []
 shadowModels = []
-for i in trange(dataCIFARonline.__CIFAR10_N_SHADOW__):
+for i in range(dataCIFARonline.__CIFAR10_N_SHADOW__):
     shadowDataLoader = dataCIFARonline.loadCenShadowTrainCIFAR10(i, device)
     shadowModels.append(trainModel(shadowDataLoader, device, dataCIFARonline.__CIFAR10_N_CLASSES__, verbose=0))
     shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device, verbose=False))
