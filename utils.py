@@ -19,7 +19,7 @@ def seedBasic(seed=1312):
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
 
-def trainTFModel(dataLoader, strategy, n_classes, backbone="resnet18", epochs=50, verbose=2):
+def trainTFModel(dataLoader, strategy, n_classes, backbone="resnet18", epochs=20, verbose=2):
     with strategy.scope():
         model = modelTF(backbone, n_classes)
         optimizer = tf.keras.optimizers.SGD(learning_rate = __LR__, momentum=__MOMENTUM__)
@@ -33,7 +33,7 @@ def trainTFModel(dataLoader, strategy, n_classes, backbone="resnet18", epochs=50
                   epochs = epochs)
     return model
 
-def trainModel(dataLoader, device, n_classes, backbone = "resnet18", epochs = 50, verbose=2):
+def trainModel(dataLoader, device, n_classes, backbone = "resnet18", epochs = 20, verbose=2):
     model = ModelFromBackbone(backbone, n_classes, device)
     if os.path.isfile(backbone+".weight"):
         model.load_state_dict(torch.load(backbone+".weight"))
