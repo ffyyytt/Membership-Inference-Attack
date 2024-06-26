@@ -38,11 +38,10 @@ seedBasic()
 backbone = "ResNet50"
 device = "tf"
 cenTrainDataLoader = dataCIFARonline.loadCenTrainCIFAR10(device)
-miaDataLoader, memberLabels, inOutLabels = dataCIFARonline.loadMIADataCIFAR10(device)
+miaDataLoader, miaLabels, memberLabels, inOutLabels = dataCIFARonline.loadMIADataCIFAR10(device)
 
 cenModel = trainTFModel(cenTrainDataLoader, strategy, dataCIFARonline.__CIFAR10_N_CLASSES__, backbone)
-yPred = cenModel.predict(miaDataLoader)
-print(yPred)
+yPred = [cenModel.predict(miaDataLoader), miaLabels]
 
 print(yPred[0].shape, yPred[1].shape)
 print(np.argmax(yPred[0], axis=1))
@@ -54,7 +53,7 @@ shadowModels = []
 for i in range(dataCIFARonline.__CIFAR10_N_SHADOW__):
     shadowDataLoader = dataCIFARonline.loadCenShadowTrainCIFAR10(i, device)
     shadowModels.append(trainTFModel(shadowDataLoader, strategy, dataCIFARonline.__CIFAR10_N_CLASSES__, backbone))
-    shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device, verbose=False))
+    shadowPreds.append([shadowModels[-1].predict(miaDataLoader), miaLabels])
     gc.collect()
     torch.cuda.empty_cache()
     if (i > 10):

@@ -21,7 +21,7 @@ cenTrainDataLoader = dataCIFARonline.loadCenTrainCIFAR10(device)
 # cenTrainDataLoader = torch.utils.data.DataLoader(trainset, batch_size=batch_size,
 #                                           shuffle=True, num_workers=2)
 
-miaDataLoader, memberLabels, inOutLabels = dataCIFARonline.loadMIADataCIFAR10(device)
+miaDataLoader, miaLabels, memberLabels, inOutLabels = dataCIFARonline.loadMIADataCIFAR10(device)
 
 cenModel = trainModel(cenTrainDataLoader, device, dataCIFARonline.__CIFAR10_N_CLASSES__, backbone)
 yPred = modelPredict(cenModel, miaDataLoader, device)

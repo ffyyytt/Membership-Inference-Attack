@@ -92,5 +92,5 @@ def loadMIADataCIFAR10(device):
     for i, (train_index, test_index) in enumerate(sss.split(X, np.argmax(Y, axis=1))):
         inOutLabels[test_index, i] = 1
     if device == "tf":
-        return ImageDatasetFromImagePathsAndLabelTF(imagePaths, labels, __CIFAR10_TF_TRANSFORMS__, __CIFAR10_BATCH_SIZE__), memberLabels, inOutLabels
-    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __CIFAR10_TRANSFORMS__), batch_size=__CIFAR10_BATCH_SIZE__, shuffle=True), memberLabels, inOutLabels
+        return ImageDatasetFromImagePathsAndLabelTF(imagePaths, labels, __CIFAR10_TF_TRANSFORMS__, __CIFAR10_BATCH_SIZE__), labels, memberLabels, inOutLabels
+    return torch.utils.data.DataLoader(ImageDatasetFromImagePathsAndLabel(imagePaths, labels, device, __CIFAR10_TRANSFORMS__), batch_size=__CIFAR10_BATCH_SIZE__, shuffle=True), labels, memberLabels, inOutLabels
