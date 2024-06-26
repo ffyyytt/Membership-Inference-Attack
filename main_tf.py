@@ -30,7 +30,7 @@ print("Number of accelerators: ", strategy.num_replicas_in_sync)
 AUTO = tf.data.experimental.AUTOTUNE
 
 seedBasic()
-backbone = "resnet50"
+backbone = "ResNet50"
 device = "tf"
 cenTrainDataLoader = dataCIFARonline.loadCenTrainCIFAR10(device)
 miaDataLoader, memberLabels, inOutLabels = dataCIFARonline.loadMIADataCIFAR10(device)
