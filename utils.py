@@ -1,5 +1,6 @@
 import os
 import scipy
+import random
 import flwr as fl
 
 from sklearn.metrics import roc_curve
@@ -9,6 +10,28 @@ from model.unit import *
 from model.FLClient import *
 from model.FLFeatureClient import *
 from model.ModelFromBackbone import *
+
+__LR__ = 1e-2
+__MOMENTUM__ = 0.9
+
+def seedBasic(seed=1312):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+
+def trainTFModel(dataLoader, strategy, n_classes, backbone="resnet18", epochs=50, verbose=2):
+    with strategy.scope():
+        model = modelTF(backbone, n_classes)
+        optimizer = tf.keras.optimizers.SGD(learning_rate = __LR__, momentum=__MOMENTUM__)
+
+        model.compile(optimizer = optimizer,
+                    loss = {'output': tf.keras.losses.CategoricalCrossentropy()},
+                    metrics = {"output": [tf.keras.metrics.CategoricalAccuracy()]})
+        
+    H = model.fit(dataLoader,
+                  verbose = verbose,
+                  epochs = epochs)
+    return model
 
 def trainModel(dataLoader, device, n_classes, backbone = "resnet18", epochs = 50, verbose=2):
     model = ModelFromBackbone(backbone, n_classes, device)
@@ -22,7 +45,7 @@ def trainModel(dataLoader, device, n_classes, backbone = "resnet18", epochs = 50
 
 def trainModelWithModel(dataLoader, device, model, epochs, verbose=2):
     model = model.to(device)
-    optimizer = torch.optim.SGD(model.parameters(), lr=1e-2, momentum=0.9, weight_decay=1e-3)
+    optimizer = torch.optim.SGD(model.parameters(), lr=__LR__, momentum=0.9, weight_decay=1e-3)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
     loss_fn=torch.nn.CrossEntropyLoss().to(device)
     model.train()

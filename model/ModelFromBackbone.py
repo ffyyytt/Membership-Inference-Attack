@@ -1,5 +1,7 @@
 import torch
+import keras_cv
 import torchvision
+import tensorflow as tf
 
 class ModelFromBackbone(torch.nn.Module):
     def __init__(self, backbone, num_classes, device):
@@ -17,3 +19,12 @@ class ModelFromBackbone(torch.nn.Module):
     def forward(self, x):
         x.to(self.device)
         return self.backbone(x)
+    
+def modelTF(backbone: str = "resnet18", n_classes: int = 10):
+    inputImage = tf.keras.layers.Input(shape = (None, None, 3), dtype=tf.uint8, name = 'image')
+    image = tf.keras.layers.Lambda(lambda data: tf.keras.applications.imagenet_utils.preprocess_input(tf.cast(data, tf.float32), mode="tf"))(inputImage)
+    feature = tf.keras.layers.GlobalAveragePooling2D()(keras_cv.models.ResNetBackbone.from_preset(backbone, name = "model")(image))
+    output = tf.keras.layers.Dense(n_classes, activation='softmax')(feature)
+
+    model = tf.keras.models.Model(inputs = [inputImage], outputs = [output])
+    return model
