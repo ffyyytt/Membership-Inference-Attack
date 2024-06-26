@@ -1,3 +1,6 @@
+import numpy as np
+np.object = np.object_
+
 import gc
 import torch
 import dataCIFARonline
