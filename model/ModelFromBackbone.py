@@ -23,7 +23,7 @@ def modelTF(backbone: str = "ResNet50", n_classes: int = 10):
     inputImage = tf.keras.layers.Input(shape = (None, None, 3), dtype=tf.uint8, name = 'image')
     image = tf.keras.layers.Lambda(lambda data: tf.keras.applications.imagenet_utils.preprocess_input(tf.cast(data, tf.float32), mode="tf"))(inputImage)
     feature = tf.keras.layers.GlobalAveragePooling2D()(getattr(tf.keras.applications, backbone)(weights = None, include_top = False)(image))
-    output = tf.keras.layers.Dense(n_classes, activation='softmax')(feature)
+    output = tf.keras.layers.Dense(n_classes, activation='softmax', name = "output")(feature)
 
     model = tf.keras.models.Model(inputs = [inputImage], outputs = [output])
     return model
