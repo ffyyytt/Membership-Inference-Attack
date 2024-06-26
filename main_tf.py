@@ -42,6 +42,7 @@ miaDataLoader, memberLabels, inOutLabels = dataCIFARonline.loadMIADataCIFAR10(de
 
 cenModel = trainTFModel(cenTrainDataLoader, strategy, dataCIFARonline.__CIFAR10_N_CLASSES__, backbone)
 yPred = cenModel.predict(miaDataLoader)
+print(yPred)
 
 print(yPred[0].shape, yPred[1].shape)
 print(np.argmax(yPred[0], axis=1))
