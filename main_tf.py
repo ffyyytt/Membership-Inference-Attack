@@ -1,9 +1,3 @@
-import numpy as np
-np.object = object
-np.int = int 
-np.float = float 
-np.bool = bool    
-
 import gc
 import torch
 import dataCIFARonline
