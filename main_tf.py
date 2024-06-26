@@ -1,9 +1,14 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 import gc
 import torch
 import dataCIFARonline
 from utils import *
 from sklearn.metrics import roc_auc_score
 import torchvision.transforms as transforms
+
+tf.get_logger().setLevel('INFO')
 
 try:
     tpu = tf.distribute.cluster_resolver.TPUClusterResolver() # TPU detection
