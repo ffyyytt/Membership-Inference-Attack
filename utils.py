@@ -19,7 +19,7 @@ def seedBasic(seed=1312):
     os.environ['PYTHONHASHSEED'] = str(seed)
     np.random.seed(seed)
 
-def trainTFModel(dataLoader, strategy, n_classes, backbone="resnet18", epochs=20, verbose=0):
+def trainTFModel(dataLoader, strategy, n_classes, backbone="resnet18", epochs=40, verbose=0):
     with strategy.scope():
         model = modelTF(backbone, n_classes)
         optimizer = tf.keras.optimizers.SGD(learning_rate = __LR__, momentum=__MOMENTUM__)
