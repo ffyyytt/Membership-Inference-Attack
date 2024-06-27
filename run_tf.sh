@@ -5,7 +5,7 @@
 #SBATCH --gres gpu:2
 #SBATCH --time 6-23:50:00
 #SBATCH --cpus-per-task 18
-#SBATCH --mem-per-cpu 3G
+#SBATCH --mem-per-cpu 5G
 #SBATCH --mail-type FAIL,END
 
 conda activate ffyytt
