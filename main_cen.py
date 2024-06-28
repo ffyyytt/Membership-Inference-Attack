@@ -25,7 +25,7 @@ cenTrainDataLoader = dataCIFARonline.loadCenTrainCIFAR10(device)
 miaDataLoader, miaLabels, memberLabels, inOutLabels = dataCIFARonline.loadMIADataCIFAR10(device)
 
 cenModel = trainModel(cenTrainDataLoader, device, dataCIFARonline.__CIFAR10_N_CLASSES__, backbone)
-yPred = modelPredict(cenModel, miaDataLoader, device)
+yPred = modelPredict(cenModel, miaDataLoader, device, verbose=False)
 
 print(yPred[0].shape, yPred[1].shape)
 print(np.argmax(yPred[0], axis=1))
@@ -37,11 +37,8 @@ shadowPreds = []
 shadowModels = []
 for i in trange(dataCIFARonline.__CIFAR10_N_SHADOW__):
     shadowDataLoader = dataCIFARonline.loadCenShadowTrainCIFAR10(i, device)
-    original_print = print
-    builtins.print = lambda *args, **kwargs: None
     shadowModels.append(trainModel(shadowDataLoader, device, dataCIFARonline.__CIFAR10_N_CLASSES__, verbose=0))
     shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device, verbose=False))
-    builtins.print = original_print
     gc.collect()
     torch.cuda.empty_cache()
     if (i > 10):
