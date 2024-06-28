@@ -22,7 +22,7 @@ def seedBasic(seed=1312):
 def trainTFModel(dataLoader, strategy, n_classes, backbone="resnet18", epochs=40, verbose=0):
     with strategy.scope():
         model = modelTF(backbone, n_classes)
-        optimizer = tf.keras.optimizers.SGD(learning_rate = __LR__, momentum=__MOMENTUM__)
+        optimizer = "SGD"
 
         model.compile(optimizer = optimizer,
                     loss = {'output': tf.keras.losses.CategoricalCrossentropy()},
