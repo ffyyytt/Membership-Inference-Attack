@@ -4,7 +4,7 @@
 # On peut éventuellement placer ici les commentaires SBATCH permettant de définir les paramètres par défaut de lancement :
 #SBATCH --gres gpu:4
 #SBATCH --time 1-23:50:00
-#SBATCH --cpus-per-task 38
+#SBATCH --cpus-per-gpu 9
 #SBATCH --mem-per-cpu 3G
 #SBATCH --mail-type FAIL,END
 
