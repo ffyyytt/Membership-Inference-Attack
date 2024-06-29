@@ -2,6 +2,9 @@ import gc
 import torch
 import builtins
 import dataCIFARonline
+
+import pandas as pd
+
 from utils import *
 from sklearn.metrics import roc_auc_score
 import torchvision.transforms as transforms
@@ -35,14 +38,20 @@ print(np.mean(np.argmax(yPred[0], axis=1) == np.argmax(yPred[1], axis=1)))
 
 shadowPreds = []
 shadowModels = []
+auc = []
+TPR = []
 for i in trange(dataCIFARonline.__CIFAR10_N_SHADOW__):
     shadowDataLoader = dataCIFARonline.loadCenShadowTrainCIFAR10(i, device)
     shadowModels.append(trainModel(shadowDataLoader, device, dataCIFARonline.__CIFAR10_N_CLASSES__, verbose=0))
     shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device, verbose=False))
     if (i > 10):
         scores = computeMIAScore(yPred, shadowPreds, inOutLabels)
-        print(f"\nAttack: {roc_auc_score(memberLabels, scores)}")
-        print(f"\nTPR at {0.001} FPR: {TPRatFPR(memberLabels, scores, 0.001)}")
+        auc.append(roc_auc_score(memberLabels, scores))
+        TPR.append(TPRatFPR(memberLabels, scores, 0.001))
+        df = pd.DataFrame()
+        df["auc"] = auc
+        df["TPR@0.001"] = TPR
+        df.to_csv("output.csv", index = False)
     
 
 print(inOutLabels)
