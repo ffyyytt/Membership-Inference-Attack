@@ -41,10 +41,8 @@ for i in trange(dataCIFARonline.__CIFAR10_N_SHADOW__):
     shadowPreds.append(modelPredict(shadowModels[-1], miaDataLoader, device, verbose=False))
     if (i > 10):
         scores = computeMIAScore(yPred, shadowPreds, inOutLabels)
-        print(f"Attack: {roc_auc_score(memberLabels, scores)}")
-        print(f"TPR at {0.001} FPR: {TPRatFPR(memberLabels, scores, 0.001)}")
-        gc.collect()
-        torch.cuda.empty_cache()
+        print(f"\nAttack: {roc_auc_score(memberLabels, scores)}")
+        print(f"\nTPR at {0.001} FPR: {TPRatFPR(memberLabels, scores, 0.001)}")
     
 
 print(inOutLabels)
