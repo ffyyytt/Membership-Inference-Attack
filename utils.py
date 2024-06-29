@@ -11,7 +11,7 @@ from model.FLClient import *
 from model.FLFeatureClient import *
 from model.ModelFromBackbone import *
 
-__LR__ = 1e-2
+__LR__ = 3e-2
 __MOMENTUM__ = 0.9
 
 def seedBasic(seed=1312):

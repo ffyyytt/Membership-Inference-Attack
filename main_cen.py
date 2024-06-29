@@ -1,5 +1,6 @@
 import gc
 import torch
+import logging
 import builtins
 import dataCIFARonline
 
@@ -8,6 +9,7 @@ import pandas as pd
 from utils import *
 from sklearn.metrics import roc_auc_score
 import torchvision.transforms as transforms
+logging.basicConfig(level='critical')
 
 seedBasic()
 backbone = "resnet18"
