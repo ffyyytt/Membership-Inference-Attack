@@ -32,12 +32,12 @@ __CIFAR10_TRANSFORMS__ = torchvision.transforms.v2.Compose([
 ])
 __CIFAR10_TF_TRANSFORMS__ = A.Compose([])
 
-def _loadCIFAR10():
+def _loadCIFAR10(sub = "train"):
     labels = []
     labelset = {}
-    
+
     # Glob
-    imagePaths = glob.glob(os.path.expanduser("~")+"/data/CIFAR-10-images-master/train/*/*")
+    imagePaths = glob.glob(f"CIFAR-10-images/{sub}/*/*")
     for file in imagePaths:
         if file.split("/")[-2] not in labelset:
             labelset[file.split("/")[-2]] = len(labelset)
