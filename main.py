@@ -260,16 +260,16 @@ if(is_train_org):
         adjust_learning_rate(optimizer, epoch) 
 
         train_loss, train_acc = train(private_data_tensor, private_label_tensor, model, criterion, optimizer, epoch, use_cuda, batch_size= BATCH_SIZE, uniform_reg=False)
-        val_loss, val_acc = test(val_data_tensor, val_label_tensor, model, criterion, use_cuda, device=device)
+        val_loss, val_acc = test(val_data_tensor, val_label_tensor, model, criterion, device=device)
 
         is_best = val_acc > best_val_acc
         best_val_acc=max(val_acc, best_val_acc)
         
         if is_best:
-            _, best_test_acc = test(te_data_tensor,te_label_tensor,model,criterion,use_cuda)
+            _, best_test_acc = test(te_data_tensor,te_label_tensor,model,criterion,device=device)
             test_acc = best_test_acc
         else:
-            _, test_acc = test(te_data_tensor,te_label_tensor,model,criterion,use_cuda)
+            _, test_acc = test(te_data_tensor,te_label_tensor,model,criterion,device=device)
 
         save_checkpoint_global(
             {
@@ -300,8 +300,8 @@ assert os.path.isfile(resume_best), 'Error: no checkpoint directory found for be
 checkpoint = os.path.dirname(resume_best)
 checkpoint = torch.load(resume_best)
 best_model.load_state_dict(checkpoint['state_dict'])
-_,best_test = test(te_data_tensor, te_label_tensor, best_model, criterion, use_cuda, device=device)
-_,best_val = test(val_data_tensor, val_label_tensor, best_model, criterion, use_cuda, device=device)
-_,best_train = test(private_data_tensor, private_label_tensor, best_model, criterion, use_cuda, device=device)
+_,best_test = test(te_data_tensor, te_label_tensor, best_model, criterion, device=device)
+_,best_val = test(val_data_tensor, val_label_tensor, best_model, criterion, device=device)
+_,best_train = test(private_data_tensor, private_label_tensor, best_model, criterion, device=device)
 print('\t===> Undefended model %s | train acc %.4f | val acc %.4f | test acc %.4f'%(resume_best, best_train, best_val, best_test), flush=True)
 

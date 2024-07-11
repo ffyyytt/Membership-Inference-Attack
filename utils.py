@@ -39,7 +39,7 @@ def accuracy(output, target, topk=(1,)):
         res.append(correct_k.mul_(100.0 / batch_size))
     return res
 
-def test(test_data,labels,model,criterion,use_cuda,device=torch.device('cuda'), debug_='MEDIUM',batch_size=64, isAdvReg=0):
+def test(test_data,labels,model,criterion, device, debug_='MEDIUM',batch_size=64, isAdvReg=0):
 
     batch_time = AverageMeter()
     data_time = AverageMeter()
