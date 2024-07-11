@@ -1,113 +1,112 @@
-import os
-import scipy
-import random
-import flwr as fl
+import time
 
-from sklearn.metrics import roc_curve
+class AverageMeter(object):
+    """Computes and stores the average and current value
+       Imported from https://github.com/pytorch/examples/blob/master/imagenet/main.py#L247-L262
+    """
+    def __init__(self):
+        self.reset()
 
-from model.FLStrategies import *
-from model.unit import *
-from model.FLClient import *
-from model.FLFeatureClient import *
-from model.ModelFromBackbone import *
+    def reset(self):
+        self.val = 0
+        self.avg = 0
+        self.sum = 0
+        self.count = 0
 
-__LR__ = 3e-2
-__MOMENTUM__ = 0.9
+    def update(self, val, n=1):
+        self.val = val
+        self.sum += val * n
+        self.count += n
+        self.avg = self.sum / self.count
 
-def seedBasic(seed=1312):
-    random.seed(seed)
-    os.environ['PYTHONHASHSEED'] = str(seed)
-    np.random.seed(seed)
+def accuracy(output, target, topk=(1,)):
+    """Computes the precision@k for the specified values of k"""
+    maxk = max(topk)
+    batch_size = target.size(0)
 
-def trainTFModel(dataLoader, strategy, n_classes, backbone="resnet18", epochs=20, verbose=1):
-    with strategy.scope():
-        model = modelTF(backbone, n_classes)
-        optimizer = tf.keras.optimizers.SGD(learning_rate = __LR__, momentum=__MOMENTUM__)
+    _, pred = output.topk(maxk, 1, True, True)
+    pred = pred.t()
+    correct = pred.eq(target.view(1, -1).expand_as(pred))
 
-        model.compile(optimizer = optimizer,
-                    loss = {'output': tf.keras.losses.CategoricalCrossentropy()},
-                    metrics = {"output": [tf.keras.metrics.CategoricalAccuracy()]})
-        
-    H = model.fit(dataLoader,
-                  verbose = verbose,
-                  epochs = epochs)
-    return model
+    res = []
+    for k in topk:
+        correct_k = correct[:k].reshape(-1).float().sum(0)
+        res.append(correct_k.mul_(100.0 / batch_size))
+    return res
 
-def trainModel(dataLoader, device, n_classes, backbone = "resnet18", epochs = 20, verbose=2):
-    model = ModelFromBackbone(backbone, n_classes, device)
-    if os.path.isfile(backbone+".weight"):
-        model.load_state_dict(torch.load(backbone+".weight"))
-    else:
-        torch.save(model.state_dict(), backbone+".weight")
-    model = torch.nn.DataParallel(model)
-    trainModelWithModel(dataLoader, device, model, epochs, verbose)
-    return model
+def test(test_data,labels,model,criterion,use_cuda,device=torch.device('cuda'), debug_='MEDIUM',batch_size=64, isAdvReg=0):
 
-def trainModelWithModel(dataLoader, device, model, epochs, verbose=2):
-    model = model.to(device)
-    optimizer = torch.optim.SGD(model.parameters(), lr=__LR__, momentum=0.9, weight_decay=1e-3)
-    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=30, gamma=0.1)
-    loss_fn=torch.nn.CrossEntropyLoss().to(device)
-    model.train()
-    train_unit = MyTrainUnit(module=model, optimizer=optimizer, lr_scheduler=scheduler, loss_fn=loss_fn, totalSteps=len(dataLoader), totalEpochs=epochs, verbose=verbose, device=device)
-    torchtnt.framework.train(train_unit, dataLoader, max_epochs=epochs)
-    return model
+    batch_time = AverageMeter()
+    data_time = AverageMeter()
+    losses = AverageMeter()
+    top1 = AverageMeter()
+    top5 = AverageMeter()
 
-def FLModelPredict(parameters, n_classes, backbone, dataLoader, device):
-    model = ModelFromBackbone(backbone, n_classes, device)
-    FLset_parameters(model, parameters_to_ndarrays(parameters))
-    model = model.to(device)
-    predUnit = MyPredictUnit(module=model)
-    torchtnt.framework.predict(predUnit, dataLoader)
-    return predUnit.outputs, predUnit.labels
-
-def modelPredict(model, dataLoader, device, verbose=True):
-    model = model.to(device)
+    # switch to evaluate mode
     model.eval()
-    predUnit = MyPredictUnit(module=model, verbose=verbose)
-    torchtnt.framework.predict(predUnit, dataLoader)
-    return predUnit.outputs, predUnit.labels
 
-def probabilityNormalDistribution(data, p, eps=1e-6):
-    if len(data) == 0:
-        return 0.0
-    mean = np.mean(data)
-    std = max(np.std(data), eps)
-    return scipy.stats.norm.cdf((p - mean) / std)
+    end = time.time() 
+    
+    len_t = len(test_data)//batch_size
+    if len(test_data)%batch_size:
+        len_t += 1
 
-def LiRAcalculation(p, data, inOutLabel, eps=1e-6):
-    truthIdxs = np.where(inOutLabel[:len(data)]==1)[0]
-    falseIdxs = np.where(inOutLabel[:len(data)]==0)[0]
-    if len(truthIdxs) == 0:
-        return 1-probabilityNormalDistribution(data, p)
-    else:
-        return probabilityNormalDistribution(data[truthIdxs], p)/max(probabilityNormalDistribution(data[falseIdxs], p), eps)
+    data_time.update(time.time() - end)
+ 
+    total = 0
+    for ind in range(len_t):
+        inputs =  test_data[ind*batch_size:(ind+1)*batch_size].to(device)
+        targets = labels[ind*batch_size:(ind+1)*batch_size].to(device)
 
-def minMaxScale(data):
-    data = np.array(data)
-    return (data-min(data))/(max(data)-min(data))
+        total += len(inputs) 
+        # compute output
+        # compute output
+        outputs = model(inputs)
 
-def computeMIAScore(yPred, shadowPreds, inOutLabels):
-    trueYPred = np.max(yPred[0]*yPred[1], axis=1)
-    trueShadowPred = np.array([np.max(shadowPreds[i][0]*shadowPreds[i][1], axis=1) for i in range(len(shadowPreds))])
-    scores = [LiRAcalculation(trueYPred[i], trueShadowPred[:, i], inOutLabels[i]) for i in range(len(trueYPred))]
-    return scores
+        if(type(outputs)==tuple):
+            outputs = outputs[0]
+        
 
-def TPRatFPR(y_true, y_score, target_fpr = 0.01):
-    fpr, tpr, thresholds = roc_curve(y_true, y_score)
-    tpr_at_target_fpr = tpr[np.where(fpr >= target_fpr)[0][0]]
+        loss = criterion(outputs, targets) 
+        # measure accuracy and record loss
+        prec1, prec5 = accuracy(outputs.data, targets.data, topk=(1, 5))
+        losses.update(loss.item(), inputs.size(0))
+        top1.update(prec1.item(), inputs.size(0))
+        top5.update(prec5.item(), inputs.size(0))
 
-    return tpr_at_target_fpr
+ 
 
 
-def FLSetup(n_classes, device, backbone = "resnet18", nClients=10):
-    params = FLget_parameters(ModelFromBackbone(backbone, n_classes, device))
-    strategy = MyFedAVG(
-        fraction_fit=1.,
-        fraction_evaluate=1.,
-        min_fit_clients=nClients,
-        min_evaluate_clients=nClients,
-        min_available_clients=nClients,
-        initial_parameters=fl.common.ndarrays_to_parameters(params),
-    )
-    return strategy
+    return (losses.avg, top1.avg)
+
+def save_checkpoint_user(user_num, state, is_best, checkpoint=None, filename='checkpoint.pth.tar',extra_checkpoints=False):
+    assert (checkpoint != None), 'Error: No checkpoint path provided!'
+
+    if not os.path.isdir(checkpoint):
+        mkdir_p(checkpoint)
+
+    if extra_checkpoints:
+        e_path=checkpoint+'/user_%d_checkpoints'%user_num
+        if not os.path.isdir(e_path):
+            mkdir_p(e_path)
+        e_filepath=e_path+'/checkpoint_epoch_%d.pth.tar'%state['epoch']
+        print('User %d saving extra checkpoint @epoch %d'%(user_num,state['epoch']))
+        torch.save(state, e_filepath)
+
+    filepath = os.path.join(checkpoint, filename)
+    torch.save(state, filepath)
+    if is_best:
+        shutil.copyfile(filepath, os.path.join(checkpoint, 'user_%d_model_best.pth.tar'%(user_num)))
+
+def save_checkpoint_global(state, is_best, checkpoint=None, filename='checkpoint.pth.tar', best_filename='model_best.pth.tar'):
+    assert (checkpoint != None), 'Error: No checkpoint path provided!'
+
+    if not os.path.isdir(checkpoint):
+        mkdir_p(checkpoint)
+
+    filepath = os.path.join(checkpoint, filename)
+    #torch.save(state, filepath)
+    if is_best:
+        filepath = os.path.join(checkpoint, best_filename)
+        torch.save(state, filepath)
+        #shutil.copyfile(filepath, os.path.join(checkpoint, best_filename))
